@@ -504,17 +504,50 @@ yellow_clip = clip2.fl_image(process_image)
 %time yellow_clip.write_videofile(yellow_output, audio=False)
 ```
 
+
+    ---------------------------------------------------------------------------
+
+    ValueError                                Traceback (most recent call last)
+
+    <ipython-input-36-d74268c6471a> in <module>()
+          2 yellow_output = 'yellow.mp4' # Output
+          3 
+    ----> 4 cache_lane = cache_lane_initialization(clip2)
+          5 yellow_clip = clip2.fl_image(process_image)
+          6 get_ipython().magic('time yellow_clip.write_videofile(yellow_output, audio=False)')
+
+
+    <ipython-input-31-52efbbeeafc3> in cache_lane_initialization(clip)
+         10     frame_t0 = clip.get_frame(t=0)
+         11     img = (np.copy(frame_t0)*255).astype('uint8')
+    ---> 12     _, cache_lane = lanedetection_pipeline(img)
+         13 
+         14     return cache_lane
+
+
+    <ipython-input-18-bfe1a09846f3> in lanedetection_pipeline(image)
+         11     cannyedges = canny(blur_gray, low_threshold, high_threshold)
+         12     masked_edges = region_of_interest(cannyedges, vertices)
+    ---> 13     houghlines, lines = hough_lines(masked_edges, rho, theta, threshold, min_line_len, max_line_gap)
+         14     lane = detect_lanes_average_extrapolate(lines)
+         15     detected_lanes = drawlanes(masked_edges, lane, color=[255, 0, 0], thickness=6)
+
+
+    ValueError: too many values to unpack (expected 2)
+
+
 <video width="800" height="450" controls>
   <source src="yellow.mp4" type="video/mp4">
 </video>
 
 ## Reflections
 
-The project was particularly challanging for 
-Congratulations on finding the lane lines!  As the final step in this project, we would like you to share your thoughts on your lane finding pipeline... specifically, how could you imagine making your algorithm better / more robust?  Where will your current algorithm be likely to fail?
+The project was particularly interesting as well as challenging at the same time. The developed pipeline and algorithm can be further modified as follows:
+*  Make the algorithm insensitive to sudden motion of camera due to bumps/potholes 
+*  Develop algorithm to fine tune parameters by gridsearch to smoothen the lane flick across frames
+*  Make the algorithm insensitive to ligthing/weather conditions to detect lanes.
 
-Please add your thoughts below,  and if you're up for making your pipeline more robust, be sure to scroll down and check out the optional challenge video below!
-
+The current algorithm is failing in the optional challenge question around 4 seconds. 
 
 ## Optional Challenge
 
