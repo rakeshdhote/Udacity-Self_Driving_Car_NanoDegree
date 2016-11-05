@@ -466,7 +466,7 @@ The current algorithm is failing in the optional challenge question around 4 sec
 
 ## Optional Challenge
 
-Try your lane finding pipeline on the video below.  Does it still work?  Can you figure out a way to make it more robust?  If you're up for the challenge, modify your pipeline so it works with this video and submit it along with the rest of your project!
+The current algorithm is failing in the optional challenge question around 4 seconds. The video shows the detected lane before failure.
 
 
 ```python
