@@ -3,15 +3,16 @@
 ---
 This is the first project in Udacity's Self Driving Car Nanodegree Program. 
 
-The aim of this project is to detect road lane lines captured by camera mounted on a car dashboard. 
+The aim of this project is to create a pipeline to detect road lane lines in images/video captured by camera mounted on a car dashboard. 
   
-This project involves 
+This pipeline involves following components:
 *  lane detection using color selection,   
 *  region of interest selection,   
 *  grayscaling,   
 *  Gaussian smoothing,   
-*  Canny Edge Detection and  
-*  Hough Tranform line detection. 
+*  Canny Edge Detection,   
+*  Hough Tranform line detection,
+*  Smooting by first-order filter to smoothen the flickr of lines across frames.
 
 The static image output should look like the following:
 
@@ -298,30 +299,6 @@ for image in imagelist:
     mpimg.imsave("test_images/"+image.replace("test_images/","")+"-after.png", road_with_lane_edges)
 ```
 
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-29-1f18539c1adf> in <module>()
-          6     img = (np.copy(image_original)*255).astype('uint8')
-          7 
-    ----> 8     detected_lanes, _ = lanedetection_pipeline(img)
-          9     road_with_lane_edges = weighted_img(detected_lanes, mpimg.imread(image), α=0.8, β=1., λ=0.)
-         10 
-
-
-    <ipython-input-18-bfe1a09846f3> in lanedetection_pipeline(image)
-         11     cannyedges = canny(blur_gray, low_threshold, high_threshold)
-         12     masked_edges = region_of_interest(cannyedges, vertices)
-    ---> 13     houghlines, lines = hough_lines(masked_edges, rho, theta, threshold, min_line_len, max_line_gap)
-         14     lane = detect_lanes_average_extrapolate(lines)
-         15     detected_lanes = drawlanes(masked_edges, lane, color=[255, 0, 0], thickness=6)
-
-
-    ValueError: too many values to unpack (expected 2)
-
-
 <table>
 <tr>
     <td>
@@ -455,50 +432,9 @@ white_clip = clip1.fl_image(process_image)
 %time white_clip.write_videofile(white_output, audio=False)
 ```
 
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-32-8c1a62510c82> in <module>()
-          2 clip1 = VideoFileClip("solidWhiteRight.mp4")
-          3 
-    ----> 4 cache_lane = cache_lane_initialization(clip1)
-          5 white_clip = clip1.fl_image(process_image)
-          6 get_ipython().magic('time white_clip.write_videofile(white_output, audio=False)')
-
-
-    <ipython-input-31-52efbbeeafc3> in cache_lane_initialization(clip)
-         10     frame_t0 = clip.get_frame(t=0)
-         11     img = (np.copy(frame_t0)*255).astype('uint8')
-    ---> 12     _, cache_lane = lanedetection_pipeline(img)
-         13 
-         14     return cache_lane
-
-
-    <ipython-input-18-bfe1a09846f3> in lanedetection_pipeline(image)
-         11     cannyedges = canny(blur_gray, low_threshold, high_threshold)
-         12     masked_edges = region_of_interest(cannyedges, vertices)
-    ---> 13     houghlines, lines = hough_lines(masked_edges, rho, theta, threshold, min_line_len, max_line_gap)
-         14     lane = detect_lanes_average_extrapolate(lines)
-         15     detected_lanes = drawlanes(masked_edges, lane, color=[255, 0, 0], thickness=6)
-
-
-    ValueError: too many values to unpack (expected 2)
-
-
 <video width="800" height="450" controls>
   <source src="white.mp4" type="video/mp4">
 </video>
-
-
-```python
-HTML("""
-<video width="960" height="540" controls>
-  <source src="{0}">
-</video>
-""".format(white_output))
-```
 
 **Example 2: **
 Video with solid yellow lane on the left.
@@ -513,48 +449,18 @@ yellow_clip = clip2.fl_image(process_image)
 %time yellow_clip.write_videofile(yellow_output, audio=False)
 ```
 
-
-    ---------------------------------------------------------------------------
-
-    ValueError                                Traceback (most recent call last)
-
-    <ipython-input-36-d74268c6471a> in <module>()
-          2 yellow_output = 'yellow.mp4' # Output
-          3 
-    ----> 4 cache_lane = cache_lane_initialization(clip2)
-          5 yellow_clip = clip2.fl_image(process_image)
-          6 get_ipython().magic('time yellow_clip.write_videofile(yellow_output, audio=False)')
-
-
-    <ipython-input-31-52efbbeeafc3> in cache_lane_initialization(clip)
-         10     frame_t0 = clip.get_frame(t=0)
-         11     img = (np.copy(frame_t0)*255).astype('uint8')
-    ---> 12     _, cache_lane = lanedetection_pipeline(img)
-         13 
-         14     return cache_lane
-
-
-    <ipython-input-18-bfe1a09846f3> in lanedetection_pipeline(image)
-         11     cannyedges = canny(blur_gray, low_threshold, high_threshold)
-         12     masked_edges = region_of_interest(cannyedges, vertices)
-    ---> 13     houghlines, lines = hough_lines(masked_edges, rho, theta, threshold, min_line_len, max_line_gap)
-         14     lane = detect_lanes_average_extrapolate(lines)
-         15     detected_lanes = drawlanes(masked_edges, lane, color=[255, 0, 0], thickness=6)
-
-
-    ValueError: too many values to unpack (expected 2)
-
-
 <video width="800" height="450" controls>
   <source src="yellow.mp4" type="video/mp4">
 </video>
 
 ## Reflections
 
-The project was particularly interesting as well as challenging at the same time. The developed pipeline and algorithm can be further modified as follows:
-*  Make the algorithm insensitive to sudden motion of camera due to bumps/potholes 
-*  Develop algorithm to fine tune parameters by gridsearch to smoothen the lane flick across frames
-*  Make the algorithm insensitive to ligthing/weather conditions to detect lanes.
+The project was particularly interesting as well as challenging at the same time. A pipeline consists of color selection, region of interest selection, grayscaling, Gaussian smoothing, Canny edge detection, Hough tranform line detection and smooting by first-order filter.
+
+The developed pipeline and algorithm can be further modified as follows:
+*  Make the algorithm insensitive to sudden motion of camera due to bumps/potholes. This can be conducted by better averaging schemes due to sudden inputs.  
+*  Develop algorithm to fine tune parameters by gridsearch to smoothen the lane flickr across frames. This can be done by developing semi-automated methods.
+*  Make the algorithm insensitive to ligthing/weather conditions to detect lanes. Train algorithm under various conditions for the same vehicle and camera mount and accounting for light/weather based trained biased/weighted average parameters.
 
 The current algorithm is failing in the optional challenge question around 4 seconds. 
 
