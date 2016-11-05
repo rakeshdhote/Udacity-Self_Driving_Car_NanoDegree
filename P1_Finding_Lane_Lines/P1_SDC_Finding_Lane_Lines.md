@@ -491,6 +491,15 @@ white_clip = clip1.fl_image(process_image)
   <source src="white.mp4" type="video/mp4">
 </video>
 
+
+```python
+HTML("""
+<video width="960" height="540" controls>
+  <source src="{0}">
+</video>
+""".format(white_output))
+```
+
 **Example 2: **
 Video with solid yellow lane on the left.
 
