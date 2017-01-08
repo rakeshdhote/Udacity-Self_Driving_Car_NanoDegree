@@ -22,15 +22,15 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 
     </td>
     <td align="center">
-        __Track 1__
+        Track 1
     </td>
     <td align="center">
-        __Track 2__
+        Track 2
     </td>
 </tr>
 <tr>
     <td align="center">
-        **Screen Resolution**
+        Screen Resolution
     </td>
     <td align="center">
         640 x 480
@@ -41,7 +41,7 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 </tr>
 <tr>
     <td align="center">
-        **Graphics Quality **
+        Graphics Quality 
     </td>
     <td align="center">
         Fastest
@@ -52,7 +52,7 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 </tr>
 <tr>
     <td align="center">
-        **Throttle**
+        Throttle
     </td>
     <td align="center">
         0.2
@@ -63,7 +63,7 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 </tr>
 <tr>
     <td align="center">
-        **x Steering Angle (multiplying factor)**
+        x Steering Angle (multiplying factor)
     </td>
     <td align="center">
         1.0
@@ -74,7 +74,7 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 </tr>
 <tr>
     <td align="center">
-        **Simulator**
+        Simulator
     </td>
     <td align="center">
         10 Hz
@@ -186,7 +186,7 @@ The image is picked randomly from `center, left` or `right` camera and randomly 
 Udacity has provided a rich simulator accounting for different lighting conditions on two tracks. A quick browsing through different graphics quality (fastest vs Beautiful/Fantastic) reveals tracks with different lighting/shadow conditions. As mentioned earlier, the DL model is trained for track 1 and does not see track 2, which has dark lighting conditions. 
 
 In order to recreate lighting conditions, brightness of an image is randomly changed via the conversion:   
-**`RGB image -> YUV image -> randomly change V channel value -> RGB image.`**   
+`RGB image -> YUV image -> randomly change V channel value -> RGB image.`   
 With the above transformations, the model can drive on track 2. This transformation is inspired by Vivek's Medium post.  
 
 #### 5.3.3 Crop image to remove rows with sky and bonnet pixels
@@ -460,20 +460,35 @@ def train_valid_test_split(df, random_state=0, size_train=0.8, size_valid=0.2):
 
 ## 5. Deep Learning Model
 
-### 5.1 Convolutional Neural Network
+### 5.1 Selecting CNN Model Architecture
 
-Initially, I started with Nvidia's self-driving car and custom convolutional neural network (CNN) architectures. However, after few iterations, I settled on the comma.ai CNN architecture with a modification in #kernels. The schematic of convolutional neural network (CNN) is presented in Section 4. The CNN has following layers:  
+#### 5.1.1. Model Architecture Design 
+Initially, I surveyed the important literatures on self-driving cars [Source](https://handong1587.github.io/deep_learning/2015/10/09/dl-and-autonomous-driving.html). Particularly, [Nvidia's paper](https://arxiv.org/abs/1604.07316), [Comma.ai's paper](https://arxiv.org/pdf/1608.01230v1.pdf) and Github projects gave a kickstart understanding in the state-of-the-art technological progress in self-driving cars. After few iterations of playing with Nvidia, Comma.ai and custom CNN architectures, I decided to settle on the comma.ai architecture because of its simplicity. 
+
+### 5.1.2 Architecture Characteristics 
+I followed discussions on [Stackoverflow](http://stackoverflow.com/questions/24509921/how-do-you-decide-the-parameters-of-a-convolutional-neural-network-for-image-cla), [Quora](https://www.quora.com/How-can-I-decide-the-kernel-size-output-maps-and-layers-of-CNN), [Reddit](https://www.reddit.com/r/MachineLearning/comments/4itz4e/convolutional_neural_networks_number_of_filters/) to decide CNN architecture. It is recommended to use more than two convolution layers in classification/regression problems. Inspired by comma.ai CNN architecture, I decided to go ahead with `3` convolution layers along with max-pooling and dropouts. Maxpooling is used to down sample the image. Dropouts are added for regularization and avoiding over fitting the training data. 
+
+### 5.1.3 Model Training and Evaluation 
+As all the images may not fit the RAM; it is recommended to train the model with mini-batches of data. A generator can be used to generate a mini-batch on the fly for training.   
+
+The CNN model is trained to predict a continuous steering angle for driving a self-driving car. As this is a regression problem,  `mean square error (mse)` is a good choice for the loss function. `Adam` optimizer can be used to train the model. As personally experienced as well the comments by colleagues on Slack/Conflucence forum, the `mse' may not be a perfect indicator of how well the car drives autonomously on the road. The car may drive exceptionally well even with high `mse` scores. To find the truth, it is recommended to test the model on the simulator in an autonomous mode. Hyperparameters tuning are perfomed using parametric study. 
+
+The detail about the final CNN architecture is described in the next section.  
+
+### 5.2 Final CNN Architecture 
+
+As mentioned earlier, I settled on the comma.ai CNN architecture with a modification in #kernels. The schematic of convolutional neural network (CNN) is presented in Section 4. The CNN has following layers:  
 
 <table>
 <tr>
     <td style="text-align: center;">
-        **Layer**
+        Layer
     </td>
     <td style="text-align: center;">
-        **Description**
+        Description
     </td>
     <td style="text-align: center;">
-        **Purpose**
+        Purpose
     </td>
 </tr>
 <tr>
@@ -582,7 +597,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 <table>
 <tr>
     <td>
-        **Batch Size**
+        Batch Size
     </td>
     <td>
         512
@@ -590,7 +605,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 </tr>
 <tr>
     <td>
-        **# Epochs**
+        # Epochs
     </td>
     <td>
         10
@@ -598,7 +613,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 </tr>
 <tr>
     <td>
-        **Learning Rate**
+        Learning Rate
     </td>
     <td>
         0.001
@@ -606,7 +621,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 </tr>
 <tr>
     <td>
-        **Dropout**
+        Dropout
     </td>
     <td>
         0.5
@@ -614,7 +629,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 </tr>
 </table>
 
-### 5.2 Model Training/Validation
+### 5.3 Model Training/Validation
 
 The model is trained with biased data to learn left/right steering. The snippet of the training model is presented below. The model is trained for 10 epochs with bias gradually decreasing from `1` to near-zero. The training and validation losses are plotted, and model weights are saved after each epoch.  
 
@@ -655,10 +670,10 @@ The MSE losses for training and validation data are presented below (left image)
 <table>
 <tr>
     <td style="text-align: center;">
-        **MSE Loss**
+        MSE Loss
     </td>
     <td style="text-align: center;">
-        **Sample Validation error (actual - prediction) steering angle**
+        Sample Validation error (actual - prediction) steering angle
     </td>
 </tr>
 <tr>
@@ -702,6 +717,6 @@ In addition, the project wouldn't have been completed without implementing tips 
 *  [John Chen's Agile Trainer](https://github.com/diyjac/AgileTrainer)
 *  [Thomas's Live Trainer](https://github.com/thomasantony/sdc-live-trainer)
 *  Udacity's Self Driving Car Nanodegree Slack/Confluence 
-
+*  [Improving Deep Learning Performance](http://machinelearningmastery.com/improve-deep-learning-performance/)  
 
 
