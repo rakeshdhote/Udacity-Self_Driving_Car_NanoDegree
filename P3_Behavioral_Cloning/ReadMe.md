@@ -95,7 +95,7 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 
 ### 2.1 Track 1   
 
-[![Track-1](https://www.youtube.com/embed/ALLuQNLj-Ys/0.jpg)](https://www.youtube.com/embed/ALLuQNLj-Ys) 
+[![Track-1](images/Track1.png)](https://www.youtube.com/embed/ALLuQNLj-Ys) 
 
 ```python
 YouTubeVideo("ALLuQNLj-Ys")
@@ -118,6 +118,7 @@ YouTubeVideo("ALLuQNLj-Ys")
 
 ### 2.2 Track 2   
 
+[![Track-2](images/Track2.png)](https://www.youtube.com/embed/ALLuQNLj-Ys) 
 
 ```python
 YouTubeVideo("W4BEJ9_38QA")
