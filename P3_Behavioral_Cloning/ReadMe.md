@@ -471,7 +471,7 @@ I followed discussions on [Stackoverflow](http://stackoverflow.com/questions/245
 ### 5.1.3 Model Training and Evaluation 
 As all the images may not fit the RAM; it is recommended to train the model with mini-batches of data. A generator can be used to generate a mini-batch on the fly for training.   
 
-The CNN model is trained to predict a continuous steering angle for driving a self-driving car. As this is a regression problem,  `mean square error (mse)` is a good choice for the loss function. `Adam` optimizer can be used to train the model. As personally experienced as well the comments by colleagues on Slack/Conflucence forum, the `mse' may not be a perfect indicator of how well the car drives autonomously on the road. The car may drive exceptionally well even with high `mse` scores. To find the truth, it is recommended to test the model on the simulator in an autonomous mode. Hyperparameters tuning are perfomed using parametric study. 
+The CNN model is trained to predict a continuous steering angle for driving a self-driving car. As this is a regression problem,  `mean square error (mse)` is a good choice for the loss function. `Adam` optimizer can be used to train the model. As personally experienced as well the comments by colleagues on Slack/Conflucence forum, the `mse` may not be a perfect indicator of how well the car drives autonomously on the road. The car may drive exceptionally well even with high `mse` scores. To find the truth, it is recommended to test the model on the simulator in an autonomous mode. Hyperparameters tuning are perfomed using parametric study. 
 
 The detail about the final CNN architecture is described in the next section.  
 
@@ -663,7 +663,7 @@ The model is trained with biased data to learn left/right steering. The snippet 
 			break
 ~~~~            
 
-## 6. Results
+### 5.4 Model Results
 
 The MSE losses for training and validation data are presented below (left image). Both the losses have decreasing trend. The error in steering angle (actual - prediction) angle is presented for sample 500 images (right image). The average error is contained in a small band near `0`.
 
@@ -688,18 +688,18 @@ The MSE losses for training and validation data are presented below (left image)
 
 The saved model is then used to drive a car autonomously on Tracks 1 and 2 as presented in the videos in Section 2.
 
-## 7. Conclusions
+## 6. Conclusions
 
 A human driving behavior cloning model is successfully developed to autonomously drive a car in a simulator. The camera image data is augmented and fed to a CNN model. The model is trained on Track 1. The model drives a car on Track 1 in an autonomous mode continuously. The model does surprisingly well on Track 2, although it never saw Track 2 data during training.  
 
-## 8. Future work
+## 7. Future work
 
 * Develop a new DL model (similar to Nvidia's SDC) which reads the left/center/right camera image data simultaneously and implements CNN and followed by merge, flatten and dense layers. 
 * Adding running steering angle smoothing code to avoid sudden jumps in steering angle.
 * Better graphics quality data from the Udacity simulator offer track data with varying lighting conditions. Robust model can be trained for distinct scenarios for different quality data. 
 * Check how the model performs in real-world scenarios.  
 
-## 9. Refelections
+## 8. Refelections
 
 What a project! What a journey! What an incredible experience!   
 
@@ -716,7 +716,6 @@ In addition, the project wouldn't have been completed without implementing tips 
 *  [Mohan's Medium Post](https://medium.com/@vivek.yadav/cloning-a-car-to-mimic-human-driving-using-pretrained-vgg-networks-ac5c1f0e5076#.92c970gjk)
 *  [John Chen's Agile Trainer](https://github.com/diyjac/AgileTrainer)
 *  [Thomas's Live Trainer](https://github.com/thomasantony/sdc-live-trainer)
-*  Udacity's Self Driving Car Nanodegree Slack/Confluence 
 *  [Improving Deep Learning Performance](http://machinelearningmastery.com/improve-deep-learning-performance/)  
-
+*  Udacity's Self Driving Car Nanodegree Slack/Confluence. 
 
