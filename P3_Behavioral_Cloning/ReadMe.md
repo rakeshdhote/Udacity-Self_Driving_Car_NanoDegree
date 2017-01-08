@@ -13,14 +13,6 @@ The video stream is obtained from cameras mounted on a windshield in a simulator
 
 ## 2. Autonomous Driving Videos
 
-
-```python
-# Import Packages
-from IPython.display import HTML
-from IPython.display import YouTubeVideo
-%matplotlib inline
-```
-
 The DL model is trained to clone human driving behavior. The weights (model.h5) and architecture (model.json) are saved. To drive a car on the track autonomously, use the following parameters and command:  
 `python drive.py model.json`  
 
@@ -97,47 +89,9 @@ The DL model is trained to clone human driving behavior. The weights (model.h5) 
 
 [![Track-1](images/Track1.png)](https://www.youtube.com/embed/ALLuQNLj-Ys) 
 
-```python
-YouTubeVideo("ALLuQNLj-Ys")
-```
-
-
-
-
-
-        <iframe
-            width="400"
-            height="300"
-            src="https://www.youtube.com/embed/ALLuQNLj-Ys"
-            frameborder="0"
-            allowfullscreen
-        ></iframe>
-        
-
-
-
 ### 2.2 Track 2   
 
-[![Track-2](images/Track2.png)](https://www.youtube.com/embed/ALLuQNLj-Ys) 
-
-```python
-YouTubeVideo("W4BEJ9_38QA")
-```
-
-
-
-
-
-        <iframe
-            width="400"
-            height="300"
-            src="https://www.youtube.com/embed/W4BEJ9_38QA"
-            frameborder="0"
-            allowfullscreen
-        ></iframe>
-        
-
-
+[![Track-2](images/Track2.png)](https://www.youtube.com/embed/W4BEJ9_38QA) 
 
 ## 3. Hardware/Software Setup
 
@@ -748,61 +702,6 @@ In addition, the project wouldn't have been completed without implementing tips 
 *  [John Chen's Agile Trainer](https://github.com/diyjac/AgileTrainer)
 *  [Thomas's Live Trainer](https://github.com/thomasantony/sdc-live-trainer)
 *  Udacity's Self Driving Car Nanodegree Slack/Confluence 
-
-<table>
-<tr>
-    <td>
-        <iframe width="420" height="315"
-            src="https://youtu.be/ALLuQNLj-Ys">
-        </iframe>
-    </td>
-</tr>
-<tr>
-    <td align="center">
-        bias = 1.0
-    </td>
-    <td align="center">
-        bias = 0.5
-    </td>
-</tr>
-</table>
-
-
-```python
-HTML("""
-<video width="680" height="320" controls loop>
-  <source src="images/Track1_B512_FullLap.mp4" type="video/mp4">
-</video>
-""")
-```
-
-
-
-
-
-<video width="680" height="320" controls loop>
-  <source src="images/Track1_B512_FullLap.mp4" type="video/mp4">
-</video>
-
-
-
-
-
-```python
-HTML("""
-<video width="680" height="320" controls loop>
-  <source src="images/Track2_B512_FullLap.mp4" type="video/mp4">
-</video>
-""")
-```
-
-
-
-
-
-<video width="680" height="320" controls loop>
-  <source src="images/Track2_B512_FullLap.mp4" type="video/mp4">
-</video>
 
 
 
