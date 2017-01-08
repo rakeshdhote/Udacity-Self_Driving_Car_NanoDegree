@@ -137,7 +137,7 @@ The steering angle is plotted for a full lap on Track 1 (left image). The plot s
 
 A constant steering angle offset is added to the left and right camera to account for matching center camera data. A steering offset of `0.25` is added to the left camera steering angle and subtracted from the camera right  steering angle. This is because the left camera has to move right with an offset to come to the center. Conversely, the right camera has to move left with an offset to come to the center. An estimate of offset is obtained from Slack/Confluence discussions.  
 
-````
+~~~~python
 def read_csv_df(directory, fname_log_file):
 	"""
 	Read CSV file in Pandas Dataframe
@@ -169,7 +169,7 @@ def read_csv_df(directory, fname_log_file):
 	dfn = dfn.loc[np.abs(dfn['steering']) <= 1.0]
 	dfn = dfn.reset_index(drop=True)
 	return dfn
-````
+~~~~
 
 ### 5.3 Data Augmentation
 
@@ -201,7 +201,7 @@ The cropped image is resized to 40x80x3 in order to train model faster.
 
 At the last stage, an image is randomly flipped vertically. The steering angle of a flipped image is modified by multiplying it with `-1`.
 
-~~~~
+~~~~python
 # Snippet to read batch data with augmentation 
 
 def read_batchdata(df,
@@ -365,7 +365,7 @@ This idea is inspired by Vivek/Mohan's Medium post.
 </tr>
 </table>
 
-~~~~
+~~~~python
 # Snippet to sample biased batch data
 def biased_batch_data(df, batch_size, bias):
 	"""
@@ -404,7 +404,7 @@ def biased_batch_data(df, batch_size, bias):
 In general, the image data is huge in size and overflows a general-purpose CPU memory. In order to perform computations, it is advisable to generate a small data batch on the fly. This is achieved using the data generator in Keras API. The following snippet reads a data frame and produces images and steering angle in a desired batch size.  
  
 
-~~~~
+~~~~python
 # Snippet of data generator function
 def data_generator(df, batch_size, bias):
 	"""
@@ -441,7 +441,7 @@ def data_generator(df, batch_size, bias):
 For training the DL model, a small batch of `512` augmented images and steering angles are provided. The data is split into training and validation dataset in a ratio of 80:20. There is no test dataset used for this model. Rather, the model is tested on autonomous tracks 1 and 2.   
 
 
-~~~~
+~~~~python
 def train_valid_test_split(df, random_state=0, size_train=0.8, size_valid=0.2):
 	"""
 	Split Data - Train/Valid dataset
@@ -618,7 +618,7 @@ A parametric study is conducted to choose appropriate `batch size`,  `number of 
 
 The model is trained with biased data to learn left/right steering. The snippet of the training model is presented below. The model is trained for 10 epochs with bias gradually decreasing from `1` to near-zero. The training and validation losses are plotted, and model weights are saved after each epoch.  
 
-~~~~
+~~~~python
 # Snippet to train model using data generator
 	while True:
 		bias = 1.0 / (num_runs + 1.0)
