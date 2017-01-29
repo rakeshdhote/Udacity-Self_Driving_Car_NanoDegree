@@ -184,7 +184,7 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test2.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_whitepixels.jpg' style="width: 400px;">
@@ -200,7 +200,7 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' style="width: 400px;">
+        <img src='images/test2_yellowpixels.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_whiteyellowpixels.jpg' style="width: 400px;">
