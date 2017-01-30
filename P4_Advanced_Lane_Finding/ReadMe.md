@@ -93,7 +93,6 @@ def calibrateCarCamera(img, nx, ny):
     return None
 ```
 
-
 ```python
 #%% Undistort image
 def undistortImage(img, mtx, dist):
@@ -108,6 +107,8 @@ def undistortImage(img, mtx, dist):
 
     return cv2.undistort(img, mtx, dist, None, mtx)
 ```
+
+The following figure presents the camera calibration along within distortion correction implemented on a real-life road image. 
 
 <table>
 <tr>
@@ -137,6 +138,10 @@ def undistortImage(img, mtx, dist):
 - - -
 
 ## 3. Lane Detection Pipeline
+
+After the camera image is corrected, 
+
+
 ### 3.1 Color and Gradient Transformations
 #### 3.1.1 Color Transformation
 
@@ -186,7 +191,7 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
         <img src='images/test2.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whitepixels.jpg' style="width: 400px;">
+        <img src='images/test2_whitepixels.jpg' width="300">
     </td>
 </tr>
 <tr>
@@ -199,10 +204,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' style="width: 300px;">
+        <img src='images/test2_yellowpixels.jpg' width="300">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whiteyellowpixels.jpg' style="width: 400px;">
+        <img src='images/test2_whiteyellowpixels.jpg' width="300">
     </td>
 </tr>
 </table>
