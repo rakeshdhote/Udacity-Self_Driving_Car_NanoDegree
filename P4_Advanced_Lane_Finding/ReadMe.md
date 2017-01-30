@@ -36,8 +36,12 @@ The objective of this project is to create a image/video processing pipeline to 
 </tr>
 </table>
 
-### 2.1 Camera Calibration
-Compute the camera calibration matrix and distortion coefficients given a set of chessboard images
+
+The video image obtained from the car camera is not a true image due to distortions and inherent lens structural properties. These inaccuracies in the image may lead to incorrect dicision making for a self driving car. Hence, it is essential to minimise these inaccuracies by correcting the distortions and correct camera calibration.
+
+Typically, a camera is calibrated by taking a checker-board picture, finding square corners and then using image processing algorithm to correct the distortion. The `OpenCV` function `cv2.findChessboardCorners` is used to detect square corners by mapping `3D` real world `object points` to `2D` `image points`. Later, `object points` and `image points` are used to calibrate camera using  `cv2.calibrateCamera` function.
+
+The code snippet to calibrate camera and undistort (distortion correction) an image is provided below.
 
 ```python
 #%% Calibrate Car Camera
@@ -88,11 +92,6 @@ def calibrateCarCamera(img, nx, ny):
     pickle.dump( dist_pickle, open("camera_calibration_pickle.p", "wb" ) )
     return None
 ```
-
-- - -
-
-### 2.2 Distortion Correction
-Apply the distortion correction to the raw image
 
 
 ```python
