@@ -139,11 +139,14 @@ The following figure presents the camera calibration along within distortion cor
 
 ## 3. Lane Detection Pipeline
 
-After the camera image is corrected, 
+After the camera image is corrected, the next step is to identify lane lines. Typically, the lane lines are `white` and `yellow` in color. `Color` and `edges` are two common attributes, which can be used to detect lanes. 
 
 
-### 3.1 Color and Gradient Transformations
-#### 3.1.1 Color Transformation
+### 3.1 Color Transformation
+
+Though it is easy to detect `white` and `yellow` lane colors in day light, they become difficult to identify under night/twilight/dawn light conditions or different enviornmental conditons including rain, snow. The lane detetion algorithm  should be robust to detect road lines under various light/enviornmental conditions. Red-Green-Blue (RGB) is not a robust color space to identify road lanes. Hue-Saturation-Vibrance (HSV) can prove to a working solution to discriminate colors under various light/enviornmental conditions. Initial experimentation suggested that implementing masks of thresholed `white` and `yellow` color using the `cv2.inRange` function to extract lane pixels.
+
+The following snippet extract `white` and `yellow` pixels from image using `white_color_range` and `yellow_color_range` threshold values. 
 
 ```python
 #%% Select white/yellow pixels lanes
@@ -212,7 +215,52 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 </table>
 
-#### 3.1.2 Gradient Transformation
+### 3.2 Gradient Transformation
+
+The edges can be a good indicator of road lanes. The edges/lines can be determined by edge detection algorithm. Initial experiments reveal that the Hue-Saturation-Lightness (HSL) color space can be a good choice to detect gradient under different light/enviornmental conditions. L- and S- channels are used to extract edges [[Reference]](https://medium.com/@vivek.yadav/robust-lane-finding-using-advanced-computer-vision-techniques-mid-project-update-540387e95ed3#.qc1y9h6y0). 
+
+Sobel filters is one of the popular filter used to extract lines/edges in an image via convolution operations. The horizontal and vertical edges can be extracted using Sobel filters in X/Y directions and later combined to obtain lane lines.
+
+The following snippet extract lines using Sobel filters. 
+
+```python
+#%% Implement thresholding pipeline to detect lanes using gradient
+
+def thresholding_pipeline(img, kernels= 5, s_thresh=(50,225), l_thresh=(50,225)):
+    """
+	 Implement thresholding pipeline to detect lanes using gradient
+	:param img: Image
+    :param kernel: kernel size (odd number)
+    :param s_thresh: low/high threshold value for `saturation` channel in HSV color space
+    :param l_thresh: low/high threshold value for `light` channel in HSL color space
+	:return:
+	   thresholded image
+	"""
+    img = np.copy(img)
+
+    # Convert to HSV color space and separate the V channel
+    hls = cv2.cvtColor(img, cv2.COLOR_RGB2HLS).astype(np.float)
+    l_channel = hls[:,:,1]
+    s_channel = hls[:,:,2]
+
+    ####################
+    # Sobel xy - channel l
+    sobx = abs_sobel_thresh1(l_channel,'x',kernels,s_thresh)
+    soby = abs_sobel_thresh1(l_channel,'y',kernels,s_thresh)
+    l_sobelxy = np.copy(cv2.bitwise_or(sobx,soby))
+
+    ####################
+    # Sobel xy - channel s
+    sobx = abs_sobel_thresh1(s_channel,'x',kernels,s_thresh)
+    soby = abs_sobel_thresh1(s_channel,'y',kernels,s_thresh)
+    s_sobelxy = np.copy(cv2.bitwise_or(sobx,soby))
+
+    ####################
+    # Threshold color channel
+    image = cv2.bitwise_or(l_sobelxy,s_sobelxy)
+    image = gaussian_blur(image,kernels)
+    return image
+```
 
 <table>
 <tr>
@@ -250,7 +298,41 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </table>
 
 
-#### 3.1.3 Combined Color and Gradient Transformations
+### 3.3 Combined Color and Gradient Transformations
+
+The lane detection algorithm can be made robust by combining the pixels obtained using color and gradient (edge detection) transformations. This can be achieved by using the function described below:
+
+```python
+#%% Impelement lane detection pipeline
+
+def lane_detection_pipeline(img, pfile_cb, kernels = 5, hood_pixels=0):
+    """
+	 Determine camera matrix and distortion coefficients
+	:param img: Image
+	:param pfile_cb: Dictionary of camera/perspective matrix and distortion coefficients
+    :param kernel: kernel size (odd number)
+    :param hood_pixels: Number of pixels in vertical directions spanning vehicle hood
+	:return:
+	   detected left/right lanes in the image
+	"""
+    # Lane detection using gradients in the HSL space
+    hslwrp = thresholding_pipeline1(img, kernels=kernels, s_thresh=s_thresh, l_thresh=l_thresh)
+    # lane detection using color thresholding in HSV space
+    hsv = color_pixels_hsv(img, white_color_rangehsv, yellow_color_rangehsv)
+
+    # combined hsv + hsl
+    hsvgray = cv2.cvtColor(hsv.astype(np.uint8), cv2.COLOR_HSV2RGB)
+    hsvgray = cv2.cvtColor(hsvgray, cv2.COLOR_RGB2GRAY)
+
+    # lane detection using combined color and gradient
+    lrlanes = np.copy(cv2.bitwise_or(hslwrp,hsvgray))
+
+    # Thresholding image
+    _, lrlanes = cv2.threshold(lrlanes,1,255,cv2.THRESH_BINARY)
+    return lrlanes
+```language
+```
+
 <table>
 <tr>
     <td style="text-align: center;">
@@ -270,8 +352,24 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 </table>
 
-Use color transforms, gradients, etc., to create a thresholded binary image
-### 3.2 Apply a perspective transform to rectify binary image ("birds-eye view")
+### 3.4 Apply a perspective transform to rectify binary image ("birds-eye view")
+
+Next, the detected lanes needs to be transformed by perspective transformation to birds-eye view for line fitting and curvature calculations. The perspective transformation is conducted by mapping the source points (envelope of detected lanes) and destination points. The mapping of source points (intersection of red lines) and destination points (intersection of blue lines) is presented in the following figure.
+
+|Source  | Destination |
+| ------------- |:-------------:|
+| (0, 690) | (0 , 720)|
+| (1280, 690) | (1280, 720)|
+| (768, 480) | (1280, 0)|
+| (512, 480) | (0 , 0)|
+
+<table>
+<tr>
+    <td style="text-align: center;">
+        <img src='images/solidWhiteRight.jpg' style="width: 300px;">
+    </td>
+</tr>
+</table>
 
 <table>
 <tr>
@@ -292,7 +390,7 @@ Use color transforms, gradients, etc., to create a thresholded binary image
 </tr>
 </table>
 
-### 3.3 Detect lane pixels and fit to find lane boundary
+### 3.5 Detect lane pixels and fit to find lane boundary
 
 <table>
 <tr>
