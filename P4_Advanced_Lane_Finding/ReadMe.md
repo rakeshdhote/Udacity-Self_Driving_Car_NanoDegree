@@ -653,7 +653,8 @@ Following are the opportunities to build a more robust pipeline for videos:
 * Keep track of lane detection in previous frame 
 * Check if the curvatures over different frames are in close range 
 * Check if the lanes are roughly parallel 
-* Incoporate other light/enviornmental/road conditions such as faded lines, exiting a highway, potholes, bumps, etc. 
+
+The developed pipeline may fail under complex combinations of light/enviornmental/road conditions such as faded lines, exiting a highway, potholes, bumps, etc. 
 
 
 - - - 
