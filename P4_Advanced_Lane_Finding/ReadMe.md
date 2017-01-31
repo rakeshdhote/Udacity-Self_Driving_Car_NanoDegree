@@ -483,7 +483,7 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
         <img src='images/test2_lrlanesp.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lanefit.jpg' style="width: 400px">
+        <img src='images/test2_lanefit.jpg' >
     </td>    
 </tr>
 </table>
