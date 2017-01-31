@@ -118,13 +118,13 @@ The following figure presents the camera calibration along within distortion cor
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test2.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_undist.jpg' style="width: 300px;">
+        <img src='images/test2_undist.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_undist_warped.jpg' style="width: 300px;">
+        <img src='images/test2_undist_warped.jpg' style="width: 200px;">
     </td>
 </tr>
 </table>
@@ -197,10 +197,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' width="300px">
+        <img src='images/test2_yellowpixels.jpg' width="200px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whiteyellowpixels.jpg' width="300px">
+        <img src='images/test2_whiteyellowpixels.jpg' width="200px">
     </td>
 </tr>
 </table>
