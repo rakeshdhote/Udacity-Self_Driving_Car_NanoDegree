@@ -181,10 +181,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test21.jpg' style="width: 300px;">
+        <img src='images/test21.jpg' width="300px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whitepixels.jpg' width="300px">
+        <img src='images/test2_whitepixels.jpg' width="300px;">
     </td>
 </tr>
 <tr>
@@ -197,10 +197,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' width="300px">
+        <img src='images/test2_yellowpixels.jpg' width="300px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whiteyellowpixels.jpg' width="300px">
+        <img src='images/test2_whiteyellowpixels.jpg' width="300px;">
     </td>
 </tr>
 </table>
@@ -372,7 +372,7 @@ Next, the detected lanes need to be transformed by perspective transformation to
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test21.jpg' style="width: 200px;">
+        <img src='images/test2.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_undist_warped.jpg' style="width: 300px;">
@@ -474,13 +474,13 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test21.jpg' style="width: 200px">
+        <img src='images/test2.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lrlanesp.jpg' style="width: 200px">
+        <img src='images/test2_lrlanesp.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lanefit.jpg' style="width: 200px">
+        <img src='images/test2_lanefit.jpg' style="width: 300px">
     </td>    
 </tr>
 </table>
