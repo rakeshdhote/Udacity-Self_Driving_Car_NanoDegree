@@ -1,47 +1,41 @@
-# Self-Driving Car Engineer Nanodegree
-
-# Advanced Lane Finding
-- - -
-[TOC]
-
-## 1. Project Overview
-
-The objective of this project is to create a image/video processing pipeline to detect road lanes under different enviornmental conditions using image processing techniques. 
-
-
-## 2. Camera Calibration and Distortion Correction
-
-<table>
-<tr>
-    <td style="text-align: center;">
-        **Original Image**
-    </td>
-    <td style="text-align: center;">
-        **Distortion Correction**
-    </td>
-    <td style="text-align: center;">
-        **Distortion Correction and Warped Image**
-    </td>
-</tr>
-<tr>
-    <td style="text-align: center;">
-        <img src='camera_cal/calibration3.jpg' style="width: 300px;">
-    </td>
-    <td style="text-align: center;">
-        <img src='camera_cal/calibration3_undist.jpg' style="width: 300px;">
-    </td>
-    <td style="text-align: center;">
-        <img src='camera_cal/calibration3_undist_warped.jpg' style="width: 300px;">
-    </td>
-</tr>
-</table>
-
-
-The video image obtained from the car camera is not a true image due to distortions and inherent lens structural properties. These inaccuracies in the image may lead to incorrect dicision making for a self driving car. Hence, it is essential to minimise these inaccuracies by correcting the distortions and correct camera calibration.
-
-Typically, a camera is calibrated by taking a checker-board picture, finding square corners and then using image processing algorithm to correct the distortion. The `OpenCV` function `cv2.findChessboardCorners` is used to detect square corners by mapping `3D` real world `object points` to `2D` `image points`. Later, `object points` and `image points` are used to calibrate camera using  `cv2.calibrateCamera` function.
-
-The code snippet to calibrate camera and undistort (distortion correction) an image is provided below.
+# Self-Driving Car Engineer Nanodegree 
+# Advanced Lane Finding 
+- - - 
+[TOC] 
+## 1. Project Overview 
+The objective of this project is to create a image/video processing pipeline to detect road lanes under different environmental conditions using image processing techniques. 
+ 
+## 2. Camera Calibration and Distortion Correction 
+<table> 
+<tr> 
+<td style="text-align: center;"> 
+**Original Image** 
+</td> 
+<td style="text-align: center;"> 
+**Distortion Correction** 
+</td> 
+<td style="text-align: center;"> 
+**Distortion Correction and Warped Image** 
+</td> 
+</tr> 
+<tr> 
+<td style="text-align: center;"> 
+<img src='camera_cal/calibration3.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='camera_cal/calibration3_undist.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='camera_cal/calibration3_undist_warped.jpg' style="width: 300px;"> 
+</td> 
+</tr> 
+</table> 
+ 
+The video image obtained from the car camera is not a true image due to distortions and inherent lens structural properties. These inaccuracies in the image may lead to incorrect decision making for a self-driving car. Hence, it is essential to minimize these inaccuracies by correcting the distortions and camera calibration. 
+Typically, a camera is calibrated by taking a checker-board picture, finding square corners and then using the image-processing algorithm to correct the distortion. The `OpenCV` function `cv2.findChessboardCorners` is used to detect square corners by mapping `3D` real world `object points` to `2D` `image points`. Later,  `object points` and `image points` are used to calibrate camera using the `cv2.calibrateCamera` function. 
+The code snippet to calibrate camera and undistort (distortion correction) an image is provided below.   
+ 
+ 
 
 ```python
 #%% Calibrate Car Camera
@@ -136,17 +130,13 @@ The following figure presents the camera calibration along within distortion cor
 </table>
 
 - - -
-
-## 3. Lane Detection Pipeline
-
-After the camera image is corrected, the next step is to identify lane lines. Typically, the lane lines are `white` and `yellow` in color. `Color` and `edges` are two common attributes, which can be used to detect lanes. 
-
-
-### 3.1 Color Transformation
-
-Though it is easy to detect `white` and `yellow` lane colors in day light, they become difficult to identify under night/twilight/dawn light conditions or different enviornmental conditons including rain, snow. The lane detetion algorithm  should be robust to detect road lines under various light/enviornmental conditions. Red-Green-Blue (RGB) is not a robust color space to identify road lanes. Hue-Saturation-Vibrance (HSV) can prove to a working solution to discriminate colors under various light/enviornmental conditions. Initial experimentation suggested that implementing masks of thresholed `white` and `yellow` color using the `cv2.inRange` function to extract lane pixels.
-
-The following snippet extract `white` and `yellow` pixels from image using `white_color_range` and `yellow_color_range` threshold values. 
+ 
+## 3. Lane Detection Pipeline 
+After the camera image is corrected; the next step is to identify lane lines. Typically, the lane lines are `white` and `yellow` in color. `Color` and `edges` are two common attributes, which can be used to detect lanes. 
+ 
+### 3.1 Color Transformation 
+Though it is easy to detect `white` and `yellow` lane colors in the day light, they become difficult to identify under night/twilight/dawn light conditions or different environmental conditions including rain, snow. The lane detection algorithm should be robust to detect road lines under various light/environmental conditions. Red-Green-Blue (RGB) is not a robust color space to identify road lanes. Hue-Saturation-Vibrance (HSV) can prove to a working solution to discriminate colors under various light/environmental conditions. Initial experimentation suggested that implementing masks of thresholded `white` and `yellow` color using the `cv2.inRange` function to extract lane pixels. 
+The following snippet extracts `white` and `yellow` pixels from image using `white_color_range` and `yellow_color_range` threshold values.  
 
 ```python
 #%% Select white/yellow pixels lanes
@@ -216,13 +206,12 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </table>
 
 ### 3.2 Gradient Transformation
+ 
+The edges can be a good indicator of road lanes. The edges/lines can be determined by the edge detection algorithm. Initial experiments reveal that the Hue-Saturation-Lightness (HSL) color space can be a good choice to detect a gradient under different light/environmental conditions. L- and S- channels are used to extract edges [[Reference]](https://medium.com/@vivek.yadav/robust-lane-finding-using-advanced-computer-vision-techniques-mid-project-update-540387e95ed3#.qc1y9h6y0). 
 
-The edges can be a good indicator of road lanes. The edges/lines can be determined by edge detection algorithm. Initial experiments reveal that the Hue-Saturation-Lightness (HSL) color space can be a good choice to detect gradient under different light/enviornmental conditions. L- and S- channels are used to extract edges [[Reference]](https://medium.com/@vivek.yadav/robust-lane-finding-using-advanced-computer-vision-techniques-mid-project-update-540387e95ed3#.qc1y9h6y0). 
+Sobel filters is one of the popular filters used to extract lines/edges in an image via convolution operations. The horizontal and vertical edges can be extracted using Sobel filters in X/Y directions and later combined to obtain lane lines. 
 
-Sobel filters is one of the popular filter used to extract lines/edges in an image via convolution operations. The horizontal and vertical edges can be extracted using Sobel filters in X/Y directions and later combined to obtain lane lines.
-
-The following snippet extract lines using Sobel filters. 
-
+The following snippet extracts lines using Sobel filters.  
 ```python
 #%% Implement thresholding pipeline to detect lanes using gradient
 
@@ -354,7 +343,8 @@ def lane_detection_pipeline(img, pfile_cb, kernels = 5, hood_pixels=0):
 
 ### 3.4 Apply a perspective transform to rectify binary image ("birds-eye view")
 
-Next, the detected lanes needs to be transformed by perspective transformation to birds-eye view for line fitting and curvature calculations. The perspective transformation is conducted by mapping the source points (envelope of detected lanes) and destination points. The mapping of source points (intersection of red lines) and destination points (intersection of blue lines) is presented in the following figure.
+Next, the detected lanes need to be transformed by perspective transformation to birds-eye view for line fitting and curvature calculations. The perspective transformation is conducted by mapping the source points (envelope of detected lanes) and destination points. The mapping of source points (intersection of red lines) and destination points (intersection of blue lines) is presented in the following figure.  
+ 
 
 |Source  | Destination |
 | ------------- |:-------------:|
@@ -391,6 +381,9 @@ Next, the detected lanes needs to be transformed by perspective transformation t
 </table>
 
 ### 3.5 Detect lane pixels and fit to find lane boundary
+
+In the bird's eye view, the lanes are detected. The next step is to apply color and gradient threshold filters to obtain a binarized image of lanes. The lanes are then  
+
 
 <table>
 <tr>
