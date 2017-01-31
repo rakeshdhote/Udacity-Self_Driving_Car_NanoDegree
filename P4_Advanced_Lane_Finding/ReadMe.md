@@ -181,7 +181,7 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test21.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_whitepixels.jpg' width="300px">
@@ -197,10 +197,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' width="200px">
+        <img src='images/test2_yellowpixels.jpg' width="300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whiteyellowpixels.jpg' width="200px">
+        <img src='images/test2_whiteyellowpixels.jpg' width="300px">
     </td>
 </tr>
 </table>
@@ -262,7 +262,7 @@ def thresholding_pipeline(img, kernels= 5, s_thresh=(50,225), l_thresh=(50,225))
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test21.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_s_sobelxy.jpg' style="width: 300px;">
@@ -333,7 +333,7 @@ def lane_detection_pipeline(img, pfile_cb, kernels = 5, hood_pixels=0):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test21.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_lrlanes.jpg' style="width: 300px;">
@@ -372,7 +372,7 @@ Next, the detected lanes need to be transformed by perspective transformation to
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 200px;">
+        <img src='images/test21.jpg' style="width: 200px;">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_undist_warped.jpg' style="width: 300px;">
@@ -474,7 +474,7 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 200px">
+        <img src='images/test21.jpg' style="width: 200px">
     </td>
     <td style="text-align: center;">
         <img src='images/test2_lrlanesp.jpg' style="width: 200px">
@@ -632,7 +632,7 @@ def video_processing_pipeline(img):
     return result
 ```
 
-
+Click on the image to run the video.
 [![Track-2](images/videoimg.png)](https://youtu.be/aJRmShMjjak)
 
 
