@@ -32,7 +32,8 @@ The objective of this project is to create a image/video processing pipeline to 
 </table> 
  
 The video image obtained from the car camera is not a true image due to distortions and inherent lens structural properties. These inaccuracies in the image may lead to incorrect decision making for a self-driving car. Hence, it is essential to minimize these inaccuracies by correcting the distortions and camera calibration. 
-Typically, a camera is calibrated by taking a checker-board picture, finding square corners and then using the image-processing algorithm to correct the distortion. The `OpenCV` function `cv2.findChessboardCorners` is used to detect square corners by mapping `3D` real world `object points` to `2D` `image points`. Later,  `object points` and `image points` are used to calibrate camera using the `cv2.calibrateCamera` function. 
+
+Typically, a camera is calibrated by taking a checker-board picture, finding square corners and then using the image-processing algorithm to correct the distortion. An `OpenCV` function `cv2.findChessboardCorners` is used to detect square corners by mapping `3D` real world `object points` to `2D` `image points`. Later,  `object points` and `image points` are used to calibrate camera using the `cv2.calibrateCamera` function. 
 The code snippet to calibrate camera and undistort (distortion correction) an image is provided below.   
  
  
@@ -135,7 +136,7 @@ The following figure presents the camera calibration along within distortion cor
 After the camera image is corrected; the next step is to identify lane lines. Typically, the lane lines are `white` and `yellow` in color. `Color` and `edges` are two common attributes, which can be used to detect lanes. 
  
 ### 3.1 Color Transformation 
-Though it is easy to detect `white` and `yellow` lane colors in the day light, they become difficult to identify under night/twilight/dawn light conditions or different environmental conditions including rain, snow. The lane detection algorithm should be robust to detect road lines under various light/environmental conditions. Red-Green-Blue (RGB) is not a robust color space to identify road lanes. Hue-Saturation-Vibrance (HSV) can prove to a working solution to discriminate colors under various light/environmental conditions. Initial experimentation suggested that implementing masks of thresholded `white` and `yellow` color using the `cv2.inRange` function to extract lane pixels. 
+Though it is easy to detect `white` and `yellow` lane colors in the day light, they become difficult to identify under night/twilight/dawn light conditions or different environmental conditions including rain, snow. The lane detection algorithm should be robust to detect road lines under various light/environmental conditions. Red-Green-Blue (RGB) is not a robust color space to identify road lanes. Hue-Saturation-Vibrance (HSV) can prove to a working solution to discriminate colors under various light/environmental conditions. Initial experimentation suggested that implementing masks of thresholded `white` and `yellow` color using the `cv2.inRange` function can extract lane pixels. 
 The following snippet extracts `white` and `yellow` pixels from image using `white_color_range` and `yellow_color_range` threshold values.  
 
 ```python
@@ -381,13 +382,15 @@ Next, the detected lanes need to be transformed by perspective transformation to
 </table>
 
 ### 3.5 Detect lane pixels and fit to find lane boundary
-In the bird's eye view, the lanes are detected. The next step is to apply color and gradient threshold filters to obtain a binarized image of lanes. The lanes are then determined using the following procedure: 
-1. Identify peaks in a bottom half of the image 
-2. Split the image in 10 equal horizontal strips 
-3. Starting from the very bottom strip, identify histogram peaks and select non-zero pixel values. The approximate mid-point of identified peaks is used to determine left and right lane pixels. 
-4. Repeat step 3 for all the strips 
-5. Save the pixel coordinates in a numpy array. 
-6. 
+In the bird's eye view, the lanes are detected. The next step is to apply color and gradient threshold filters to obtain a binarized image of lanes. The lanes are then determined using the following procedure:   
+
+1. Identify peaks in a bottom half of the image   
+2. Split the image in 10 equal horizontal strips   
+3. Starting from the very bottom strip, identify histogram peaks and select non-zero pixel values. The approximate mid-point of identified peaks is used to determine left and right lane pixels.   
+4. Repeat step 3 for all the strips    
+5. Save the pixel coordinates in a numpy array.   
+
+
 Once the left and right lane pixels are identified and saved in separate arrays, the lines are fitted separately using `np.polyfit` function. The following snippet summarizes the lane detection and line fitting procedures.  
 
 ```python
@@ -480,7 +483,7 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
         <img src='images/test2_lrlanesp.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lanefit.jpg' style="width: 300px">
+        <img src='images/test2_lanefit.jpg' style="width: 400px">
     </td>    
 </tr>
 </table>
@@ -490,10 +493,13 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
 ## 4. Calculating Curvature of Road and Vehicle Position
 The radius of curvature of the road is estimated by the formula provided in the [Reference](http://www.intmath.com/applications-differentiation/8-radius-curvature.php). it is to be noted that the correction is conducted to while calculating curvature value by mapping `pixel space` to the `world space`. The following snippet summarizes the steps. 
 
-The vehicle position is determined as follows: 
-1. Under the assumption that the camera is mounted at the centre of the car hood, we can consider the car position as centre of the image. 
-2. The intersection of fitted lane lines and X-axis is calculated, and the road position is estimated. 
-3. The difference between center of the camera (i.e. horizontal centre of the image) and mid-point of the intersection of fitted lane lines provides an estimate of the vehicle position with respect to center. If the vehicle position is left of the camera center (negative value), the car is offsetted to the left with respect to the center of the road lane. Conversely, if the offset is positive, the car is on the right side of the camera center.  
+The vehicle position is determined as follows:   
+
+1. Under the assumption that the camera is mounted at the centre of the car hood, we can consider the car position as centre of the image.  
+2. The intersection of fitted lane lines and X-axis is calculated, and the road position is estimated.   
+3. The difference between center of the camera (i.e. horizontal centre of the image) and mid-point of the intersection of fitted lane lines provides an estimate of the vehicle position with respect to center. If the vehicle position is left of the camera center (negative value), the car is offsetted to the left with respect to the center of the road lane. Conversely, if the offset is positive, the car is on the right side of the camera center.    
+
+
 
 ```python
 #%% Determine lane curvature 
@@ -632,7 +638,8 @@ def video_processing_pipeline(img):
     return result
 ```
 
-Click on the image to run the video.
+Click on the image to run the video.  
+
 [![Track-2](images/videoimg.png)](https://youtu.be/aJRmShMjjak)
 
 
@@ -652,7 +659,7 @@ Following are the opportunities to build a more robust pipeline for videos:
 - - - 
 ## 7. Reflections
 
-This was a fun project to design a robust pipeline for road lane detection than Project 1. The lessons gave me the opportunity to experiment with various image processing techniques and manipulating color spaces. The developed pipeline along with deep learning will be useful in building a robust self-driving car project.  
+This was a fun project to design a robust pipeline for road lane detection. The lessons gave me the opportunity to experiment with various image processing techniques and manipulating color spaces. The developed pipeline along with deep learning will be useful in building a robust self-driving car project.  
 
 - - -
 
