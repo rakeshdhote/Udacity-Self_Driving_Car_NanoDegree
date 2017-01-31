@@ -375,7 +375,7 @@ Next, the detected lanes need to be transformed by perspective transformation to
         <img src='images/test2.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_undist_warped.jpg' style="width: 300px;">
+        <img src='images/test2_undist_warped.jpg' style="width: 200px;">
     </td>
 </tr>
 </table>
@@ -480,7 +480,7 @@ def fitlane(img, x, y, poly = 2, num_pts = 10):
         <img src='images/test2_lrlanesp.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lanefit.jpg' style="width: 400px">
+        <img src='images/test2_lanefit.jpg' style="width: 200px">
     </td>    
 </tr>
 </table>
