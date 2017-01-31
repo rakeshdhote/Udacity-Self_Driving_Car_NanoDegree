@@ -184,7 +184,7 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
         <img src='images/test2.jpg' style="width: 300px;">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whitepixels.jpg' width="300">
+        <img src='images/test2_whitepixels.jpg' width="300px">
     </td>
 </tr>
 <tr>
@@ -197,10 +197,10 @@ def color_pixels_hsv(img, white_color_range, yellow_color_range):
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2_yellowpixels.jpg' width="300">
+        <img src='images/test2_yellowpixels.jpg' width="300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_whiteyellowpixels.jpg' width="300">
+        <img src='images/test2_whiteyellowpixels.jpg' width="300px">
     </td>
 </tr>
 </table>
@@ -381,9 +381,84 @@ Next, the detected lanes need to be transformed by perspective transformation to
 </table>
 
 ### 3.5 Detect lane pixels and fit to find lane boundary
+In the bird's eye view, the lanes are detected. The next step is to apply color and gradient threshold filters to obtain a binarized image of lanes. The lanes are then determined using the following procedure: 
+1. Identify peaks in a bottom half of the image 
+2. Split the image in 10 equal horizontal strips 
+3. Starting from the very bottom strip, identify histogram peaks and select non-zero pixel values. The approximate mid-point of identified peaks is used to determine left and right lane pixels. 
+4. Repeat step 3 for all the strips 
+5. Save the pixel coordinates in a numpy array. 
+6. 
+Once the left and right lane pixels are identified and saved in separate arrays, the lines are fitted separately using `np.polyfit` function. The following snippet summarizes the lane detection and line fitting procedures.  
 
-In the bird's eye view, the lanes are detected. The next step is to apply color and gradient threshold filters to obtain a binarized image of lanes. The lanes are then  
+```python
+#%% Image processing pipeline to process files in a folder
 
+def img_processing(images):
+    """
+	 Image processing pipeline to process files in a folder
+	:param images: list of images
+	:return:
+	   None
+       Processed images are saved in a folder
+	"""
+
+    ##Step through the list and search for chessboard corners
+    for idx, fname in enumerate(images):
+
+        # Read image
+        img = mpimg.imread(fname)
+
+        # warp image
+        warped = roadPerspectiveTransFormation(pfile_cb, img, hood_pixels=0)
+
+        # Detect lanes and remove noise
+        lrlanes = lane_detection_pipeline(warped, pfile_cb, kernels = 5,hood_pixels=0)
+        lrlanes = remove_noise(lrlanes, threshold = 0.08)
+        lxlane, lylane, rxlane, rylane = detect_lanes(lrlanes, slabs)
+
+        # Fit lines and determine curvature
+        lfitx, lfity= fitlane(lrlanes, lylane, lxlane, poly, num_pts)
+        rfitx, rfity= fitlane(lrlanes, rylane, rxlane, poly, num_pts)
+        lcurvature = lanecurvature(lrlanes, lylane, lxlane, poly)
+        rcurvature = lanecurvature(lrlanes, rylane, rxlane, poly)
+        avgcurvature = (lcurvature+rcurvature)/2.0
+
+        # Vehicle position
+        vposition = ( img.shape[1]/2 - (lfitx[-1]+rfitx[-1])/2)*xm_per_pix
+        # Obtain the resulting image
+        result = plot_road(img, lrlanes, pfile_cb, lfitx, lfity, rfitx, rfity, avgcurvature,vposition)
+
+        # Save image to the folder
+        fname1 = fname.strip('.jpg')+'_processed.jpg'
+        mpimg.imsave(fname1, result)
+
+    return None
+```
+
+```python
+#%% Fit
+
+def fitlane(img, x, y, poly = 2, num_pts = 10):
+    """
+	 Reverse perspecitive transformation of image
+	:param img: Image
+	:param x: x pixel values
+	:param y: y pixel values
+	:param poly: degree of polynomial
+	:param num_pts: # points for fitting line
+	:return:
+	   x/y values of a fitted line
+	"""
+   # fit line
+    line_fit = np.polyfit(x, y, poly)
+
+   # y points
+    ypts = np.arange(num_pts+1)*img.shape[0]/num_pts
+   # calcluate fitted x value
+    fitlane = line_fit[0]*ypts**2 + line_fit[1]*ypts + line_fit[2]
+    return fitlane, ypts
+
+```
 
 <table>
 <tr>
@@ -399,13 +474,13 @@ In the bird's eye view, the lanes are detected. The next step is to apply color 
 </tr>
 <tr>
     <td style="text-align: center;">
-        <img src='images/test2.jpg' style="width: 300px;">
+        <img src='images/test2.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lrlanesp.jpg' style="width: 300px;">
+        <img src='images/test2_lrlanesp.jpg' style="width: 300px">
     </td>
     <td style="text-align: center;">
-        <img src='images/test2_lanefit.jpg' style="width: 300px;">
+        <img src='images/test2_lanefit.jpg' style="width: 400px">
     </td>    
 </tr>
 </table>
@@ -413,11 +488,38 @@ In the bird's eye view, the lanes are detected. The next step is to apply color 
 - - -
 
 ## 4. Calculating Curvature of Road and Vehicle Position
-### 4.1 Determine curvature of the lane and vehicle position with respect to center
-### 4.2 Warp the detected lane boundaries back onto the original image
+The radius of curvature of the road is estimated by the formula provided in the [Reference](http://www.intmath.com/applications-differentiation/8-radius-curvature.php). it is to be noted that the correction is conducted to while calculating curvature value by mapping `pixel space` to the `world space`. The following snippet summarizes the steps. 
 
+The vehicle position is determined as follows: 
+1. Under the assumption that the camera is mounted at the centre of the car hood, we can consider the car position as centre of the image. 
+2. The intersection of fitted lane lines and X-axis is calculated, and the road position is estimated. 
+3. The difference between center of the camera (i.e. horizontal centre of the image) and mid-point of the intersection of fitted lane lines provides an estimate of the vehicle position with respect to center. If the vehicle position is left of the camera center (negative value), the car is offsetted to the left with respect to the center of the road lane. Conversely, if the offset is positive, the car is on the right side of the camera center.  
 
-### 4.3 Output visual display of the lane boundaries and numerical estimation of lane curvature and vehicle position
+```python
+#%% Determine lane curvature 
+
+def lanecurvature(img, y, x, poly = 2):
+    """
+	 Reverse perspecitive transformation of image
+	:param img: Image
+	:param x: x pixel values
+	:param y: y pixel values
+	:param poly: degree of polynomial
+	:return:
+	   lane curvature
+	"""
+    ym_per_pix = 30/720 # meters per pixel in y dimension
+    xm_per_pix = 3.7/700 # meters per pixel in x dimension
+
+    y_eval = np.max(np.arange(img.shape[0]))
+
+    linefit_cr = np.polyfit(y*ym_per_pix, x*xm_per_pix, poly)
+    curverad = ((1 + (2*linefit_cr[0]*y_eval*ym_per_pix + linefit_cr[1])**2)**1.5) / np.absolute(2*linefit_cr[0])
+
+    return curverad
+```
+
+The following figures present the advanced lane detection procedure for the test images. 
 
 <table>
 <tr>
@@ -482,7 +584,8 @@ In the bird's eye view, the lanes are detected. The next step is to apply color 
 
 ## 5. Video Processing Pipeline
 
-The pipeline consists of
+In order to process a video, the image processing pipeline developed in the earlier section is utilized. The following snippet wraps the necessary steps in a `video_processing_pipeline` function. A smoothing is conducted to present the curvature and vehicle position via the first-order filter.
+
 
 ```
 #%% Video image processing
@@ -535,14 +638,23 @@ def video_processing_pipeline(img):
 
 - - -
 
+## 6. Conclusions 
 
-## 6. Conclusions
+An image/video processing pipeline is built to detect road lanes under different environmental conditions using image processing techniques. The pipeline predicts the road lanes along with the radius of curvature and relative vehicle position with respect to the lane centre. The pipeline does remarkably well under different test image and video scenarios. 
 
-- - -
+Following are the opportunities to build a more robust pipeline for videos: 
+* Keep track of lane detection in previous frame 
+* Check if the curvatures over different frames are in close range 
+* Check if the lanes are roughly parallel 
+* Incoporate other light/enviornmental/road conditions such as faded lines, exiting a highway, potholes, bumps, etc. 
 
-## 7. Refelections
+
+- - - 
+## 7. Reflections
+
+This was a fun project to design a robust pipeline for road lane detection than Project 1. The lessons gave me the opportunity to experiment with various image processing techniques and manipulating color spaces. The developed pipeline along with deep learning will be useful in building a robust self-driving car project.  
 
 - - -
 
 ## References
-
+* [Radius of Curvature](http://www.intmath.com/applications-differentiation/8-radius-curvature.php)
