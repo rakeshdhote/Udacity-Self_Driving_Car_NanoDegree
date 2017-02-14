@@ -139,8 +139,8 @@ This is implemented in `process_pipeline` function in code.
 Using the sliding window technique, the classifer predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap technique is used to remove false positives. The technique works as follows:   
 
 (i) Define heatmap with `0` valued pixels.   
-(ii) If the vehicle is detected, increment value of pixels in the cell by `1'  
-(iii) Loop step (ii) for all the windows  
+(ii) If the vehicle is detected, increment value of pixels in the cell by `1`    
+(iii) Loop step (ii) for all the windows and threshold pixels above certain value  
 (iv) Use `cipy.ndimage.measurements.label` function to define cluster in heatmap to be labeled as possible vehicle  
 (v) Find vehicle bounding box coutour using `cv2.findContours` funtion  
 (vi) Plot the detected vehicle.  
@@ -229,9 +229,12 @@ The following images present heatmap and detected vehicles in the test images.
 
 ## 6. Video Processing Pipeline
 
+In order to process a video, the image processing pipeline developed in the earlier section is utilized. 
 
 
+Click on the image to run the video.  
 
+[![Track-2](images/vehicledetandtrack.png)](https://youtu.be/VWZjQgi9e2M)
 
 
 
