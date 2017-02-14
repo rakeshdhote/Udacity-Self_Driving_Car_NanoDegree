@@ -5,15 +5,18 @@ Created on Fri Feb  3 21:36:07 2017
 
 @author: rakesh
 """
+
 #%%   ########################################################################
+# Import libraries
 
 import matplotlib.image as mpimg
 import numpy as np
 import cv2
 from skimage.feature import hog
 from scipy.ndimage.measurements import label
+
 #%%   ########################################################################
-# Define a function to return HOG features and visualization
+# Define a function to return HOG features in an image
 
 def get_hog_features(img,
                     orient,
@@ -21,6 +24,18 @@ def get_hog_features(img,
                     cell_per_block,
                     vis=False,
                     feature_vec=True):
+    """
+	Define a function to return HOG features in an image
+	:param img: image
+    :param orient: HOG orientation parameter
+    :param pix_per_cell: HOG pixels per cell
+    :param cell_per_block: HOG cell per block parameter
+    :param vis: boolean to return image with HOG features
+    :param feature_vec: boolean to return HOG feature vectors
+	:return:
+	    numpy array of HOG features
+	    image with HOG features
+	"""
 
     # Call with two outputs if vis==True
     if vis == True:
@@ -49,6 +64,13 @@ def get_hog_features(img,
 
 def bin_spatial(img,
                 size=(32, 32)):
+    """
+	Feature Extraction from vehicle and non-vehicle dataset
+	:param img: image
+	:param size: tuple of spatial binning
+	:return:
+	    numpy array of spatial binned features
+	"""
 
     # Use cv2.resize().ravel() to create the feature vector
     features = cv2.resize(img, size).ravel()
@@ -60,6 +82,14 @@ def bin_spatial(img,
 # Define a function to compute color histogram features
 
 def color_hist(img, nbins=32, bins_range=(0, 256)):
+    """
+	Define a function to compute color histogram features
+	:param img: img
+	:param nbins: # of color histogram bins
+	:param bins_range: tuple of histogram binning
+	:return:
+	    numpy array of color histogram binned features
+	"""
 
     # Compute the histogram of the color channels separately
     channel1_hist = np.histogram(img[:,:,0], bins=nbins, range=bins_range)
@@ -73,8 +103,7 @@ def color_hist(img, nbins=32, bins_range=(0, 256)):
     return hist_features
 
 #%%   ########################################################################
-# Define a function to extract features from a list of images
-# Have this function call bin_spatial() and color_hist()
+# Function to extract features from a list of images
 
 def extract_features(imgs,
                         color_space='RGB',
@@ -87,6 +116,21 @@ def extract_features(imgs,
                         spatial_feat=True,
                         hist_feat=True,
                         hog_feat=True):
+    """
+	Function to extract features from a list of images
+	:param imgs: List of images
+	:param color_space: Color space
+    :param spatial_size: Tuple of spatial binning size
+    :param hist_bins: Tuple of histogram binning size
+    :param orient: HOG orientation parameter
+    :param pix_per_cell: HOG pixels per cell
+    :param hog_channel: HOG channel
+    :param spatial_feat: Boolean to define if spatial feature is used
+    :param hist_feat: Boolean to define if histogram feature is used
+    :param hog_feat: Boolean to define if HOG feature is used
+	:return:
+	    feature vector
+	"""
 
     # Create a list to append feature vectors to
     features = []
@@ -145,15 +189,23 @@ def extract_features(imgs,
     return features
 
 #%%   ########################################################################
-# Define a function that takes an image,
-# start and stop positions in both x and y,
-# window size (x and y dimensions),
-# and overlap fraction (for both x and y)
+# Extract List of sliding windows for an image
+
 def slide_window(img,
                 x_start_stop=[None, None],
                 y_start_stop=[None, None],
                 xy_window=(64, 64),
                 xy_overlap=(0.5, 0.5)):
+    """
+	Function to extract features from a list of images
+	:param img: Images
+	:param x_start_stop: Region of interest (pixel coordinates) in X-direction 
+    :param y_start_stop: Region of interest (pixel coordinates) in Y-direction 
+    :param xy_window: Tuple of sliding window size in pixels
+    :param xy_overlap: Tuple for overlapping windows
+	:return:
+	    List of sliding windows
+	"""
 
     # If x and/or y start/stop positions not defined, set to image size
     if x_start_stop[0] == None:
@@ -200,9 +252,18 @@ def slide_window(img,
     return window_list
 
 #%%   ########################################################################
-# Define a function to draw bounding boxes
+# Draw bounding boxes in an image
 
 def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
+    """
+	Draw bounding boxes in an image
+	:param img: Images
+	:param bboxes: List of boxes
+    :param color: Color of bounding box
+    :param thick: Thickness of bounding box
+	:return:
+	    Image with bounding boxes drawn
+	"""
 
     # Make a copy of the image
     imcopy = np.copy(img)
@@ -216,8 +277,17 @@ def draw_boxes(img, bboxes, color=(0, 0, 255), thick=6):
     return imcopy
 
 #%% #######################################################################################
-# Add heat
+# Add heatmap to detect vehicles with high confidence
+
 def add_heat(heatmap, hot_windows):
+    """
+	Add heatmap to detect vehicles with high confidence
+	:param heatmap: heatmap
+	:param hot_windows: List of true positive windows
+	:return:
+	    Heat map image
+	"""
+
     # Iterate through list of bboxes
     for box in hot_windows:
         # Add += 1 for all pixels inside each bbox
@@ -226,26 +296,52 @@ def add_heat(heatmap, hot_windows):
     return heatmap
 
 #%%  #######################################################################################
+# Implement threshold on overlapping boxes in heatmap to detect vehicles with high confidence
+
 def apply_threshold(heatmap, threshold):
+	"""
+	Implement threshold on overlapping boxes in heatmap to detect vehicles with high confidence
+	:param heatmap: heatmap
+	:param threshold: threshold value
+	:return:
+	    Heat map image with threshold implemented
+	"""
+
     # Zero out pixels below the threshold
     heatmap[heatmap <= threshold] = 0
+
     # Return thresholded map
     return heatmap
 #%%  #######################################################################################
+# Draw labeled boxes
 
 def draw_labeled_boxes(img, labels):
+	"""
+	Draw labeled boxes
+	:param img: Image
+	:param labels: List of detected labels
+	:return:
+	    image with detected labels
+	"""
+
     carboxes = []
+
     # Iterate through all detected cars
     for car_number in range(1, labels[1]+1):
+
         # Find pixels with each car_number label value
         nonzero = (labels[0] == car_number).nonzero()
+
         # Identify x and y values of those pixels
         nonzeroy = np.array(nonzero[0])
         nonzerox = np.array(nonzero[1])
+
         # Define a bounding box based on min/max x and y
         bbox = ((np.min(nonzerox), np.min(nonzeroy)), (np.max(nonzerox), np.max(nonzeroy)))
+
         # Draw the box on the image
         cv2.rectangle(img, bbox[0], bbox[1], (0,0,255), 6)
         carboxes.append(bbox)
+
     # Return the image
     return img, carboxes

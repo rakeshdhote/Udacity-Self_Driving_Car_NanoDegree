@@ -6,6 +6,7 @@ Created on Fri Feb  3 21:35:39 2017
 @author: rakesh
 """
 #%%   ########################################################################
+# Import libraries
 
 import cv2
 import glob
@@ -26,9 +27,7 @@ from sklearn.model_selection import train_test_split # if sklearn version >= 0.1
 #from sklearn.cross_validation import train_test_split # if sklearn version <= 0.17
 
 #%%   ########################################################################
-# Define a function to extract features from a single image window
-# This function is very similar to extract_features()
-# just for a single image rather than list of images
+# Function to extract features from a single image window
 
 def single_img_features(img,
                         color_space='RGB',
@@ -41,6 +40,21 @@ def single_img_features(img,
                         spatial_feat=True,
                         hist_feat=True,
                         hog_feat=True):
+    """
+	 Function to extract features from a single image window
+	:param img: Image
+	:param color_space: Color space
+    :param spatial_size: Tuple of spatial binning size
+    :param hist_bins: Tuple of histogram binning size
+    :param orient: HOG orientation parameter
+    :param pix_per_cell: HOG pixels per cell
+    :param hog_channel: HOG channel
+    :param spatial_feat: Boolean to define if spatial feature is used
+    :param hist_feat: Boolean to define if histogram feature is used
+    :param hog_feat: Boolean to define if HOG feature is used
+	:return:
+	    feature vector
+	"""
 
     # Define an empty list to receive features
     img_features = []
@@ -67,16 +81,13 @@ def single_img_features(img,
 
         # Append features to list
         img_features.append(spatial_features)
-#        img_features.append(sp_feature)
 
     # Compute histogram features if flag is set
     if hist_feat == True:
         hist_features = color_hist(feature_image, nbins=hist_bins)
-#        ht_feature = minmax_scale.fit_transform(hist_features)
 
         # Append features to list
         img_features.append(hist_features)
-#        img_features.append(ht_feature)
 
     # Compute HOG features if flag is set
     if hog_feat == True:
@@ -90,18 +101,14 @@ def single_img_features(img,
             hog_features = get_hog_features(feature_image[:,:,hog_channel], orient,
                         pix_per_cell, cell_per_block, vis=False, feature_vec=True)
 
-#        hg_feature = minmax_scale.fit_transform(hog_features)
-
         # Append features to list
         img_features.append(hog_features)
-#        img_features.append(hg_feature)
 
     # Return concatenated array of features
     return np.concatenate(img_features)
 
 #%%   ########################################################################
-# Define a function you will pass an image
-# and the list of windows to be searched (output of slide_windows())
+# Function to provide list of true positive windows
 
 def search_windows(img,
                     windows,
@@ -118,6 +125,26 @@ def search_windows(img,
                     spatial_feat=True,
                     hist_feat=True,
                     hog_feat=True):
+    """
+	 Function to provide list of true positive windows
+	:param img: Image
+	:param windows: list of slide search windows
+    :param clf: Trained classifier
+    :param scaler: normalized scalar
+    :param color_space: Color space
+    :param spatial_size: Tuple of spatial binning size
+    :param spatial_size: Tuple of spatial binning size
+    :param hist_bins: # histogram bins
+    :param hist_range: Range of histogram bins
+    :param orient: HOG orientation parameter
+    :param pix_per_cell: HOG pixels per cell
+    :param hog_channel: HOG channel
+    :param spatial_feat: Boolean to define if spatial feature is used
+    :param hist_feat: Boolean to define if histogram feature is used
+    :param hog_feat: Boolean to define if HOG feature is used
+	:return:
+	    list of true positive windows
+	"""
 
     # Create an empty list to receive positive detection windows
     on_windows = []
@@ -157,8 +184,16 @@ def search_windows(img,
 
 
 #%%   ########################################################################
-# Feature Extraction
+# Feature Extraction from vehicle and non-vehicle dataset
+
 def feature_extraction(cars, notcars):
+    """
+	Feature Extraction from vehicle and non-vehicle dataset
+	:param cars: list of file names of car images
+	:param notcars: list of file names of non-car images
+	:return:
+	    numpy array of features for cars and non-cars images
+	"""
 
     car_features = extract_features(cars,
                             color_space=color_space,
@@ -190,6 +225,15 @@ def feature_extraction(cars, notcars):
 # Data split - train/test dataset
 
 def data_train_test_split(car_features, notcar_features, split_ratio, rand_state):
+    """
+	Data split - train/test dataset
+	:param car_features: numpy array of car features
+	:param notcar_features: numpy array of non-car features
+	:param split_ratio: ratio of training/test data set
+	:param rand_state: random state
+	:return:
+	    numpy array of training and test features and labels
+	"""
 
     features = np.vstack((car_features, notcar_features)).astype(np.float64)
 
@@ -208,9 +252,20 @@ def data_train_test_split(car_features, notcar_features, split_ratio, rand_state
     return features_train, features_test, labels_train, labels_test, features_scaler
 
 #%%   ########################################################################
-## Model training/test and pickling the model
+## Training/Testing a classifier and pickling the classifier
 
 def model_train_test(features_train, features_test, labels_train, labels_test, fname_pickle):
+    """
+	Training/Testing a classifier and pickling the classifier
+	:param features_train: features of training data
+	:param features_test: features of test data
+	:param labels_train: labels of training data
+	:param labels_test: labels of test data
+	:param fname_pickle: file name of pickle file
+	:return:
+	    Trained classifier
+	    Pickled file
+	"""
 
     # Use a linear SVC
     clf = LinearSVC(C=0.01)
@@ -237,9 +292,21 @@ def model_train_test(features_train, features_test, labels_train, labels_test, f
 
     return clf
 
-#%%
+#%%   ########################################################################
+# Create heatmap for detected region and threshold the output
 
 def heatmap_windows(image, hot_windows, threshold):
+    """
+	Create heatmap for detected region and threshold the output
+	:param image: image
+	:param hot_windows: list of detected windows
+	:param threshold: threshold value to pick overlapping bounding boxes
+	:return:
+	    heatmap : heatmap
+	    labels : detected labels
+	    retimg : image with bounding boxs drawn
+	    boxesv : list of bounding box coordinates
+	"""
 
     # Create heatmap
     heatmap = np.zeros_like(image[:,:,0]).astype(np.float)
@@ -250,14 +317,23 @@ def heatmap_windows(image, hot_windows, threshold):
     retimg, boxesv = draw_labeled_boxes(image, labels)
 
     return heatmap, labels, retimg, boxesv
-#%%
+
+#%%   ########################################################################
+# Image processing pipeline to detect vehicle
 
 def process_pipeline(image):
+    """
+	Image processing pipeline to detect vehicle
+	:param image: image
+	:return:
+	    heatmap : heatmap
+	    retimg : image with bounding boxs drawn
+	"""
 
-
-	# Create sliding windows
+	# Create empty sliding windows
     windows = []
-    # xy_window = (64,64)
+
+    # Sliding windows of size (64,64)
     windows64 = slide_window(image,
                            x_start_stop=x_start_stop,
                            y_start_stop=y_start_stop,
@@ -265,7 +341,7 @@ def process_pipeline(image):
                            xy_overlap=xy_overlap)
     windows.extend(windows64)
 
-    # xy_window = (96,96)
+    # Sliding windows of size (96,96)
     windows96 = slide_window(image,
                            x_start_stop=x_start_stop,
                            y_start_stop=y_start_stop,
@@ -273,7 +349,7 @@ def process_pipeline(image):
                            xy_overlap=xy_overlap)
     windows.extend(windows96)
 
-        # xy_window = (96,96)
+    # Sliding windows of size (96,96)
     windows128 = slide_window(image,
                            x_start_stop=x_start_stop,
                            y_start_stop=y_start_stop,
@@ -281,6 +357,7 @@ def process_pipeline(image):
                            xy_overlap=xy_overlap)
     windows.extend(windows128)
 
+    # Check if classifier predicts cars in a sliding window
     hot_windows = search_windows(image,
                                  windows,
                                  clf,
@@ -302,7 +379,6 @@ def process_pipeline(image):
         return retimg, heatmap
     else:
         return retimg
-#%%
 
 ##############################################################
 #%% Main function
@@ -310,7 +386,6 @@ def process_pipeline(image):
 if __name__ == '__main__':
 
     #%%  Read Data
-
     dir_vehicles = '../DataSet/vehicles/**/*.png'
     dir_nonvehicles = '../DataSet/non-vehicles/**/*.png'
 
@@ -319,7 +394,6 @@ if __name__ == '__main__':
     notcars = glob.glob(dir_nonvehicles, recursive=True)
 
     #%% Parameter definations
-
     color_space = 'YCrCb' # Can be RGB, HSV, LUV, HLS, YUV, YCrCb  'HLS'
     orient = 9  # HOG orientations
     pix_per_cell = 8 # HOG pixels per cell
@@ -342,20 +416,19 @@ if __name__ == '__main__':
     dec_threshold = 0.5
     font = cv2.FONT_HERSHEY_SIMPLEX
 
+	##############################################################
     #%% Extract Features and test train data split
 
     # Read images and extract features
     car_features, notcar_features = feature_extraction(cars, notcars)
 
     # Random state
-    rand_state = np.random.randint(0, 1000000) # 37629184 #
+    rand_state = np.random.randint(0, 1000000)
 
     # train/test data split
     features_train, features_test, labels_train, labels_test, features_scaler = data_train_test_split(car_features, notcar_features, split_ratio, rand_state)
 
-    #%% Model training/test and pickling the model
-    os.remove(fname_pickle)
-
+    # Model training/test and pickling the model
     if os.path.isfile(fname_pickle):
         # Load classifier
         with open(fname_pickle, 'rb') as f:
@@ -366,11 +439,11 @@ if __name__ == '__main__':
         clf = model_train_test(features_train, features_test, labels_train, labels_test, fname_pickle)
         print(">>>>>> Model Trained and saved to a pickle file")
 
-#%% image pipeline
+    ##############################################################
+	#%% Image processing pipeline implemented on test images
 
     images = glob.glob('test_images/*.jpg')
 
-#    fname = images[4]
     for fname in images:
 
         if '.png' in fname:
@@ -384,7 +457,8 @@ if __name__ == '__main__':
         mpimg.imsave(fname.strip('.jpg')+'_processed.jpg',retimg)
         mpimg.imsave(fname.strip('.jpg')+'_heatmap.jpg',heatmap, cmap='gist_heat')
 
-#%%  Video processing
+    ##############################################################
+	#%%  Video processing 
 
     #original videos
     ip_clip = "project_video.mp4"
