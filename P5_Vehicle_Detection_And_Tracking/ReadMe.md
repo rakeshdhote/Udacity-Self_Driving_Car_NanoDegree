@@ -126,6 +126,11 @@ This is implemented in `data_train_test_split` function in the code.
 
 ## 4. Sliding Window Search
 
+The classifier is trained on `64x64` pixels image of `vehicle` and `not-vehicle` images. The camera mounted on the hood streams video of `1280x720` pixels image with various elements such as sky, enviornment, road, vehicles, etc. In order to utilize the trained classifer to detect vehicles, the image need to split in small windows and later scaled to `64x64` pixels for prediction. This can be achieved by the sliding window technique. 
+
+The sliding window consist of 
+
+<img src='images/sliding_windows.png' style="width: 600px;"> 
 
 ## 5. Image Processing Pipeline
 <table> 
