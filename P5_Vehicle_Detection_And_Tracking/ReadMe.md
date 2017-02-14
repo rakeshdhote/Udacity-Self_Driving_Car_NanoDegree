@@ -19,9 +19,13 @@ A `vehicle` and `non-vehicle` data is read. Sample images of `64x64` pixels are 
 <tr> 
 <td style="text-align: center;"> 
 <img src='images/v1.png' style="width: 300px;"> 
+<img src='images/v2.png' style="width: 300px;"> 
+<img src='images/v3.png' style="width: 300px;"> 
 </td> 
 <td style="text-align: center;"> 
 <img src='images/nv1.png' style="width: 300px;"> 
+<img src='images/nv2.png' style="width: 300px;"> 
+<img src='images/nv3.png' style="width: 300px;"> 
 </td> 
 </tr> 
 </table> 
