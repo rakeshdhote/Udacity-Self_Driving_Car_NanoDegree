@@ -128,11 +128,26 @@ This is implemented in `data_train_test_split` function in the code.
 
 The classifier is trained on `64x64` pixels image of `vehicle` and `not-vehicle` images. The camera mounted on the hood streams video of `1280x720` pixels image with various elements such as sky, enviornment, road, vehicles, etc. In order to utilize the trained classifer to detect vehicles, the image need to split in small windows and later scaled to `64x64` pixels for prediction. This can be achieved by the sliding window technique. 
 
-The sliding window consist of 
+The following figure presents the sliding windows used for the project. The image above the horizon is not processed as it contain no useful information. Sliding windows of different sizes are utilized in order to make robust vehicle detection due to its near-far location on the road. The sliding window of size `64x64` (red boxes), `96x96` (green boxes) and `128x128` pixels (blue boxes) are used. The later two windows are resized to `64x64` pixels using `cv2.resize` function in order to utilize the classifier. Experiments are conducted with overlapping windows with 0.5 and 0.75, with later giving better performance. 
 
-<img src='images/sliding_windows.png' style="width: 600px;"> 
+This is implemented in `process_pipeline` function in code. 
+
+<img src='images/sliding_windows.png' style="width: 900px;"> 
 
 ## 5. Image Processing Pipeline
+
+Using the sliding window technique, the classifer predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap technique is used to remove false positives. The technique works as follows:   
+
+(i) Define heatmap with `0` valued pixels.   
+(ii) If the vehicle is detected, increment value of pixels in the cell by `1'  
+(iii) Loop step (ii) for all the windows  
+(iv) Use `cipy.ndimage.measurements.label` function to define cluster in heatmap to be labeled as possible vehicle  
+(v) Find vehicle bounding box coutour using `cv2.findContours` funtion  
+(vi) Plot the detected vehicle.  
+This is implemented in `process_pipeline` function in code. 
+
+The following images present heatmap and detected vehicles in the test images.
+
 <table> 
 <tr> 
 <td style="text-align: center;"> 
