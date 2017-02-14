@@ -229,16 +229,23 @@ The following images present heatmap and detected vehicles in the test images.
 
 ## 6. Video Processing Pipeline
 
-In order to process a video, the image processing pipeline developed in the earlier section is utilized. 
-
+In order to process a video, the image processing pipeline developed in the earlier section is utilized.  Heatmaps use overlapping bounding boxes and are used to detect vehicles in the image. The pipeline to use heatmap and sample images are presented in the above section. In particular, false positives are removed from the video by thresholding the heatmap. 
 
 Click on the image to run the video.  
 
 [![Track-2](images/vehicledetandtrack.png)](https://youtu.be/VWZjQgi9e2M)
 
+## 7. Conclusions 
 
+An image/video processing pipeline is built to detect vehicles and track them using image processing techniques. The pipeline detects the vehicle and track them successfully. The pipeline does remarkably well under different test image and video scenario. 
 
-- - -
+Following are the opportunities to build a more robust pipeline for videos: 
+* Integrate project 4 code in this project to track roadlines, detect vehicles and track them.  
+* Keep track of vehicle detection from previous frame.  
 
-## References
-* [Radius of Curvature](http://www.intmath.com/applications-differentiation/8-radius-curvature.php)
+The developed pipeline may fail under complex combinations of light/enviornmental/road conditions such as faded lines, exiting a highway, potholes, bumps, etc. 
+
+- - - 
+## 7. Reflections
+
+This was an interesting project to design a robust pipeline for vehicle detection and tracking. The lessons gave me the opportunity to experiment with various image processing techniques, manipulating color spaces and optimizing pipeline parameters. The developed pipeline along with deep learning will be useful in building a robust self-driving car project.  
