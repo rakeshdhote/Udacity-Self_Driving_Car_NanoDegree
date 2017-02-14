@@ -3,17 +3,17 @@
 - - - 
 [TOC] 
 ## 1. Project Overview 
-The objective of this project is to create a image/video processing pipeline to detect vehicles and track them using using traditional image processing techniques. 
+The objective of this project is to create an image/video processing pipeline to detect vehicles and track them using traditional image processing techniques. 
 
-A `vehicle` and `non-vehicle` data is read. The dataset consists of 8792 and 8968 `vehicle` and `non-vehicle` images of size `64x64` pixels. Sample images of both the data set are plotted below. 
+A `vehicle` and `non-vehicle` data is read. The dataset consists of 8792 and 8968 `vehicle` and `non-vehicle` images of size `64x64` pixels. Sample images of both the dataset are plotted below. 
 
 <table> 
 <tr> 
 <td style="text-align: center;"> 
-**Sample Vehicle Images** 
+**Sample Vehicle Images**   
 </td>  
 <td style="text-align: center;"> 
-**Sample Non-Vehicle Images** 
+**Sample Non-Vehicle Images**   
 </td> 
 </tr> 
 <tr> 
@@ -31,21 +31,23 @@ A `vehicle` and `non-vehicle` data is read. The dataset consists of 8792 and 896
 </table> 
 
 
-## 2. Feature Extraction
-To detect and track vehicles, edges, shape, color and size  are used as characterizing features. In this section, we dive in details of how to use these features in training the model for detection and tracking.  
+## 2. Feature Extraction 
 
-While extracting features, I experimented with `RGB`, `HSV`, `HLS` and `YCrCb` color spaces and fit the classifier and tested it on the test images. The `YCrCb` color space perfomed best among others, and used for further analysis. 
+To detect and track vehicles, edges, shape, color and size are commonly used as characterizing features. In this section, we dive in details of how to use these features in training the model for detection and tracking.  
+
+While extracting features, I experimented with the `RGB`,  `HSV`,  `HLS` and `YCrCb` color spaces and fit the classifier and tested it on the test images. The `YCrCb` color space performed best among others, and used in further  analysis. 
 
 ### 2.1 Histogram of Oriented Gradients (HOG)  
 
-HOG is a commonly used feature to detect objects in computer vision and image processing. The hog features are obtained using `get_hog_features` function in the `P5_utility_functions`. The SkLearn's `hog()` function with parameters `orientation`, `pixels_per_cell` and `cells_per_block` is used to obtain hog feature vector. On experimenting with different values of the above parameters, I finally setteled with   
+HOG is a commonly used feature to detect objects in computer vision and image processing. The hog features are obtained using the `get_hog_features` function in `P5_utility_functions`. The SkLearn's `hog()` function with parameters `orientation`, `pixels_per_cell` and `cells_per_block` is used to obtain hog feature vector. On experimenting with different values of the above parameters, I finally settled with   
+
 `orientation` = 9,   
 `pixels_per_cell` = (8,8) and   
 `cells_per_block` = (2,2). 
 
 The HOG features for sample `vehicle` and `not-vehicle` images are presented for `YCrCb` channels in the following figure separately. The HOG features for `vehicle` is well defined with horizontal and vertical edges for the `Y` channel than other two. The HOG features for `not-vehicle` image is unstructured in all the three channels. 
 
-==HOG features for all the `Y`, `Cr` and `Cb` channels are appended in the feature vector before training the classifier.==
+==HOG features for all the `Y`, `Cr` and `Cb` channels are appended in the feature vector before training the classifier.==   
 
 <table> 
 <tr> 
@@ -101,49 +103,51 @@ Not-Vehicle
 </table> 
 
 ### 2.2 Spatial Features
-The spatial features are obtained using `bin_spatial` function in the `P5_utility_functions`. The `spatial_bins` = (16, 16) is used to obtain feature vector.
+The spatial features are obtained using the `bin_spatial` function in `P5_utility_functions`. The `spatial_bins` = (16, 16) is used to obtain a feature vector.  
 
 
 ### 2.3 Histogram Features
-The histogram features are obtained using `color_hist` function in the `P5_utility_functions`. The `hist_bins` = 16 is used to obtain feature vector.  
+The histogram features are obtained using the `color_hist` function in `P5_utility_functions`. The `hist_bins` = 16 is used to obtain the feature vector.  
 
-==The HOG, spatial and histogram features are appended together before feeding it to the classfier. ==
+==The HOG, spatial and histogram features are appended together before feeding it to the classifier. ==    
 
 ## 3. Training a Classifier
 
 ### 3.1 Feature Normalization
-The features vector consisting of HOG, spatial and histogram features have different scales in their feature space. In order to aid numerical stability and faster convergence, the features are normalized using SkLearn's `StandardScaler` object. The normalization standardize features by removing the mean and scaling to unit variance. This is implemented in `data_train_test_split` function in the code. 
+The features vector consisting of the HOG, spatial and histogram features have different scales in their respective feature spaces. In order to aid numerical stability and faster convergence, the features are normalized using the SkLearn's `StandardScaler` object. The normalization standardize features by removing the mean and scaling to unit variance. This is implemented in `data_train_test_split` function in the code.  
 
 ### 3.2 Training-Test Data
-The training and test data is generated by random shuffling and spliting the training:test dataset in 0.75:0.25 ratio. This is implemented in `data_train_test_split` function in the code. 
+The training and test data is generated by random shuffling and splitting the training:test dataset in 0.75:0.25 ratio. This is implemented in `data_train_test_split` function in the code.  
 
 ### 3.3 Training Classifier and Measure Performance
-SkLearn's support-vector `LinearSVC` classifer is used to train the model for its simplicity. In particular, I experimented with `C` parameter of the classfier, which penalizes misclassification. I finally setteled with `C` = 0.01 for the model training.   
+SkLearn's support-vector classifer `LinearSVC` is used to train the model for its simplicity. In particular, I experimented with `C` parameter, which penalizes misclassification as aids minimizing false positives. I finally settled with `C` = 0.01 for model training.  
 
-On fitting the classifer, the classifer accuracy is ~99.2%. This indicates that the classifer does a good job in classifying `vehicle` and `non-vehicle` distinction. The trained classifier is saved in a pickle file for later use.  
+On training, the classifier accuracy is ~99.2%. This indicates that the classifier does a good job in classifying `vehicle` and `non-vehicle` images. The trained classifier is saved to a pickle file for later use.  
 
 This is implemented in `data_train_test_split` function in the code. 
 
 ## 4. Sliding Window Search
 
-The classifier is trained on `64x64` pixels image of `vehicle` and `not-vehicle` images. The camera mounted on the hood streams video of `1280x720` pixels image with various elements such as sky, enviornment, road, vehicles, etc. In order to utilize the trained classifer to detect vehicles, the image need to split in small windows and later scaled to `64x64` pixels for prediction. This can be achieved by the sliding window technique. 
-
-The following figure presents the sliding windows used for the project. The image above the horizon is not processed as it contain no useful information. Sliding windows of different sizes are utilized in order to make robust vehicle detection due to its near-far location on the road. The sliding window of size `64x64` (red boxes), `96x96` (green boxes) and `128x128` pixels (blue boxes) are used. The later two windows are resized to `64x64` pixels using `cv2.resize` function in order to utilize the classifier. Experiments are conducted with overlapping windows with 0.5 and 0.75, with later giving better performance. 
+The classifier is trained on `64x64` pixels `vehicle` and `not-vehicle` images. The camera mounted on the car hood streams `1280x720` pixel video with various elements such as sky, environment, road, vehicles, etc. In order to utilize the trained classifier to detect vehicles, the image needs to split into small windows and later scaled to `64x64` pixels for prediction. This can be achieved by sliding window technique. 
+ 
+ 
+The following figure presents the sliding windows used for the project. The image above the horizon (trees and sky) is not processed as it contains no useful information. Similarly, the bottom portion of image (car hood) is not processed. The sliding windows in a small region expedite computation time. Sliding windows of different sizes are utilized for robust vehicle detection due to its near-far location on the road. The sliding window of size `64x64` (red boxes), `96x96` (green boxes) and `128x128` pixels (blue boxes) are used. The later two windows are resized to `64x64` pixels using the `cv2.resize` function in order to utilize the classifier. Experiments are conducted with overlapping windows with 0.5 and 0.75, with later giving better performance.   
 
 This is implemented in `process_pipeline` function in code. 
 
 <img src='images/sliding_windows.png' style="width: 900px;"> 
 
 ## 5. Image Processing Pipeline
+ 
+Using the sliding window technique, the classifier predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap technique is implemented as a means of rejecting false positives, and this demonstrably reduces the number of false positives. The technique works as follows:  
 
-Using the sliding window technique, the classifer predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap technique is used to remove false positives. The technique works as follows:   
-
-(i) Define heatmap with `0` valued pixels.   
+Define heatmap with `0` valued pixels.   
 (ii) If the vehicle is detected, increment value of pixels in the cell by `1`    
 (iii) Loop step (ii) for all the windows and threshold pixels above certain value  
-(iv) Use `cipy.ndimage.measurements.label` function to define cluster in heatmap to be labeled as possible vehicle  
-(v) Find vehicle bounding box coutour using `cv2.findContours` funtion  
+(iv) Use `cipy.ndimage.measurements.label` function to define cluster in heatmap to be labeled as a possible vehicle  
+(v) Determine vehicle bounding box using the label   
 (vi) Plot the detected vehicle.  
+
 This is implemented in `process_pipeline` function in code. 
 
 The following images present heatmap and detected vehicles in the test images.
@@ -229,21 +233,26 @@ The following images present heatmap and detected vehicles in the test images.
 
 ## 6. Video Processing Pipeline
 
-In order to process a video, the image processing pipeline developed in the earlier section is utilized.  Heatmaps use overlapping bounding boxes and are used to detect vehicles in the image. The pipeline to use heatmap and sample images are presented in the above section. In particular, false positives are removed from the video by thresholding the heatmap. 
-
+In order to process a video, the image-processing pipeline developed in the earlier section is utilized. Heatmaps use overlapping bounding boxes  to detect vehicles in the image. The pipeline to use heatmap and sample images are presented in the above section. In particular, false positives are removed from the video by thresholding the heatmap.  
+ 
+ 
+The following video presents the classifier detecting and tracking vehicles. The video contains few false positives and wobbly bounding boxes, but does a good job of detecting and tracking vehicles. 
 Click on the image to run the video.  
+ 
 
 [![Track-2](images/vehicledetandtrack.png)](https://youtu.be/VWZjQgi9e2M)
 
 ## 7. Conclusions 
 
-An image/video processing pipeline is built to detect vehicles and track them using image processing techniques. The pipeline detects the vehicle and track them successfully. The pipeline does remarkably well under different test image and video scenario. 
+An image/video processing pipeline is built to detect vehicles and track them using image processing techniques. The pipeline detects the vehicle and tracks them successfully. Although, there are few false positives and wobbly bounding boxes, the pipeline does remarkably well under different test images and video. 
 
 Following are the opportunities to build a more robust pipeline for videos: 
-* Integrate project 4 code in this project to track roadlines, detect vehicles and track them.  
-* Keep track of vehicle detection from previous frame.  
+* Integrate project 4 and 5 to detect road lines, vehicles and tracking them simultaneously. 
+* Keep track of vehicle detection from previous frame and smoothen the tracking using averaging and using a first-order filter. 
+* Speed up computations by refactoring the code and use tricks such as calculating HOG features for image once and utilizing it for sliding window search. 
 
-The developed pipeline may fail under complex combinations of light/enviornmental/road conditions such as faded lines, exiting a highway, potholes, bumps, etc. 
+The classifier is trained using vehicle images from the rear. The classifier is not robust to predict vehicles from side or using front images. The developed pipeline may fail under complex combinations of light/environmental/road conditions such as dawm/twilight/night time, rain/snow, road elevation or during taking sharp turns, etc.  
+ 
 
 - - - 
 ## 7. Reflections
