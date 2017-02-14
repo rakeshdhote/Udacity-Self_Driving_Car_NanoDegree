@@ -5,7 +5,7 @@
 ## 1. Project Overview 
 The objective of this project is to create a image/video processing pipeline to detect vehicles and track them using using traditional image processing techniques. 
 
-A `vehicle` and `non-vehicle` data is read. Sample images of `64x64` pixels are plotted below.
+A `vehicle` and `non-vehicle` data is read. The dataset consists of 8792 and 8968 `vehicle` and `non-vehicle` images of size `64x64` pixels. Sample images of both the data set are plotted below. 
 
 <table> 
 <tr> 
@@ -32,10 +32,63 @@ A `vehicle` and `non-vehicle` data is read. Sample images of `64x64` pixels are 
 
 
 ## 2. Feature Extraction
-To detect and track vehicles, edges, shape, color and size  are used as characterizing features. In this section, we dive in details of how to use these features in training the model for detection and tracking.
+To detect and track vehicles, edges, shape, color and size  are used as characterizing features. In this section, we dive in details of how to use these features in training the model for detection and tracking.  
 
-### 2.1 Histogram of Oriented Gradients (HOG)
+While extracting features, I experimented with `RGB`, `HSV`, `HLS` and `YCrCb` color spaces and fit the classifier and tested it on the test images. The `YCrCb` color space perfomed best among others, and used for further analysis. 
 
+### 2.1 Histogram of Oriented Gradients (HOG)  
+
+HOG is a commonly used feature to detect objects in computer vision and image processing. The hog features are obtained using `get_hog_features` function in the `P5_utility_functions`. The SkLearn's `hog()` function with parameters `orientation`, `pixels_per_cell` and `cells_per_block` is used to obtain hog feature vector. On experimenting with different values of the above parameters, I finally setteled with   
+`orientation` = 9,   
+`pixels_per_cell` = (8,8) and   
+`cells_per_block` = (2,2). 
+
+The HOG features for sample `vehicle` and `not-vehicle` images are presented for `YCrCb` channels in the following figure separately. In the analysis, HOG features for all the channels are appended in the feature vector. 
+
+<table> 
+<tr> 
+<td style="text-align: center;"> 
+**Original** 
+</td> 
+<td style="text-align: center;"> 
+**Y** 
+</td> 
+<td style="text-align: center;"> 
+**Cr** 
+</td> 
+<td style="text-align: center;"> 
+**Cb** 
+</td> 
+</tr> 
+<tr> 
+<td style="text-align: center;"> 
+<img src='images/hog_v_orig.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_v_Y.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_v_Cr.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_v_Cb.jpg' style="width: 300px;"> 
+</td> 
+</tr> 
+<tr> 
+<td style="text-align: center;"> 
+<img src='images/hog_nv_orig.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_nv_Y.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_nv_Cr.jpg' style="width: 300px;"> 
+</td> 
+<td style="text-align: center;"> 
+<img src='images/hog_nv_Cb.jpg' style="width: 300px;"> 
+</td> 
+</tr> 
+</table> 
 
 ### 2.2 Spatial Features
 
