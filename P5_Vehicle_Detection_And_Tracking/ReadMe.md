@@ -131,15 +131,16 @@ This is implemented in `data_train_test_split` function in the code.
 The classifier is trained on `64x64` pixels `vehicle` and `not-vehicle` images. The camera mounted on the car hood streams `1280x720` pixel video with various elements such as sky, environment, road, vehicles, etc. In order to utilize the trained classifier to detect vehicles, the image needs to split into small windows and later scaled to `64x64` pixels for prediction. This can be achieved by sliding window technique. 
  
  
-The following figure presents the sliding windows used for the project. The image above the horizon (trees and sky) is not processed as it contains no useful information. Similarly, the bottom portion of image (car hood) is not processed. The sliding windows in a small region expedite computation time. Sliding windows of different sizes are utilized for robust vehicle detection due to its near-far location on the road. The sliding window of size `64x64` (red boxes), `96x96` (green boxes) and `128x128` pixels (blue boxes) are used. The later two windows are resized to `64x64` pixels using the `cv2.resize` function in order to utilize the classifier. Experiments are conducted with overlapping windows with 0.5 and 0.75, with later giving better performance.   
+The following figure presents the sliding windows used for the project. The image above the horizon (trees and sky) is not processed as it contains no useful information. Similarly, the bottom portion of image (car hood) is not processed. The sliding windows in a small region expedite computation time. Sliding windows of different sizes are utilized for robust vehicle detection due to its near-far location on the road. The sliding window of size `64x64` (red boxes), `96x96` (green boxes) and `128x128` pixels (blue boxes) are chosen after few experiments. The later two windows are resized to `64x64` pixels using the `cv2.resize` function in order to utilize the classifier. Experiments are conducted with overlapping windows with 0.5 and 0.75, with later giving better performance.   
 
 This is implemented in `process_pipeline` function in code. 
 
 <img src='images/sliding_windows.png' style="width: 900px;"> 
 
 ## 5. Image Processing Pipeline
- 
-Using the sliding window technique, the classifier predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap technique is implemented as a means of rejecting false positives, and this demonstrably reduces the number of false positives. The technique works as follows:  
+
+The features generated using the HOG, spatial and histogram bin in the `YCrCb` color space is utlizied. 
+Using the sliding window technique, the classifier predicts whether the window contains vehicle or not. If the vehicle is detected, the heatmap is implemented as means of repeated vehicle detection and thresholding for filtering false positives. The technique works as follows:  
 
 Define heatmap with `0` valued pixels.   
 (ii) If the vehicle is detected, increment value of pixels in the cell by `1`    
@@ -147,6 +148,8 @@ Define heatmap with `0` valued pixels.
 (iv) Use `cipy.ndimage.measurements.label` function to define cluster in heatmap to be labeled as a possible vehicle  
 (v) Determine vehicle bounding box using the label   
 (vi) Plot the detected vehicle.  
+
+Experiments are conducted with for different thresholding values to reduce false positives. Finally, thresold value of 3 gave the best performance.  
 
 This is implemented in `process_pipeline` function in code. 
 

@@ -195,10 +195,8 @@ def data_train_test_split(car_features, notcar_features, split_ratio, rand_state
 
     # Fit a per-column scaler
     features_scaler = StandardScaler().fit(features)
-#    features_scaler = MinMaxScaler(feature_range=(0, 1)).fit(features)
 
     # Apply the scaler to X
-#    features_scaled = features_scaler.transform(features)
     features_scaled = features_scaler.transform(features)
 
     # Define the labels vector with cars labeled as 1 and non-car images as 0
@@ -246,8 +244,6 @@ def heatmap_windows(image, hot_windows, threshold):
     # Create heatmap
     heatmap = np.zeros_like(image[:,:,0]).astype(np.float)
     heatmap = add_heat(heatmap, hot_windows)
-#    heatmap = apply_threshold(heatmap, threshold)
-#    plt.imshow(heatmap, cmap='gist_heat')
 
     # Create labels
     labels = label(heatmap)
@@ -257,14 +253,9 @@ def heatmap_windows(image, hot_windows, threshold):
 #%%
 
 def process_pipeline(image):
-#    image = mpimg.imread('aaaa.jpg')
-#    draw_image = np.copy(image)
 
-    # Uncomment the following line if you extracted training
-    # data from .png images (scaled 0 to 1 by mpimg) and the
-    # image you are searching is a .jpg (scaled 0 to 255)
-    #image = image.astype(np.float32)/255
 
+	# Create sliding windows
     windows = []
     # xy_window = (64,64)
     windows64 = slide_window(image,
@@ -305,28 +296,7 @@ def process_pipeline(image):
                                  hist_feat=hist_feat,
                                  hog_feat=hog_feat)
 
-#    window_img = draw_boxes(image.copy(), hot_windows, color=(0, 0, 255), thick=6)
-#    plt.imshow(window_img)
     heatmap, labels, retimg, boxesv = heatmap_windows(image, hot_windows, threshold=1)
-#    plt.imshow(heatmap,cmap='gist_heat')
-#    plt.imshow(retimg)
-
-        # Find blobs using cv2.findContours
-    hm = (heatmap*255).astype('uint8')
-    _, contours, _ = cv2.findContours(hm.copy(), mode = cv2.RETR_LIST,method = cv2.CHAIN_APPROX_SIMPLE)
-
-    # Compute bounding boxes
-    vehicles_out = []
-    for contour in contours:
-        (x0, y0, size_x, size_y) = cv2.boundingRect(contour)
-        vehicles_out.append((x0, y0, x0+size_x, y0+size_y))
-
-    window_img = draw_boxes(image.copy(), vehicles_out, color=(0, 0, 255), thick=6)
-#    plt.imshow(window_img)
-    # Add text
-#    result = cv2.putText(retimg, 'Number of Cars = '+str(labels[1]),(100,100), font, 2,(255,255,255) ,2)
-#    result = retimg
-#    return result
 
     if hmap == True:
         return retimg, heatmap
