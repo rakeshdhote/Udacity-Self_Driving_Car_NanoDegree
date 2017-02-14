@@ -11,7 +11,7 @@ A `vehicle` and `non-vehicle` data is read. The dataset consists of 8792 and 896
 <tr> 
 <td style="text-align: center;"> 
 **Sample Vehicle Images** 
-</td> 
+</td>  
 <td style="text-align: center;"> 
 **Sample Non-Vehicle Images** 
 </td> 
@@ -43,10 +43,14 @@ HOG is a commonly used feature to detect objects in computer vision and image pr
 `pixels_per_cell` = (8,8) and   
 `cells_per_block` = (2,2). 
 
-The HOG features for sample `vehicle` and `not-vehicle` images are presented for `YCrCb` channels in the following figure separately. In the analysis, HOG features for all the channels are appended in the feature vector. 
+The HOG features for sample `vehicle` and `not-vehicle` images are presented for `YCrCb` channels in the following figure separately. The HOG features for `vehicle` is well defined with horizontal and vertical edges for the `Y` channel than other two. The HOG features for `not-vehicle` image is unstructured in all the three channels. 
+
+==HOG features for all the `Y`, `Cr` and `Cb` channels are appended in the feature vector before training the classifier.==
 
 <table> 
 <tr> 
+<td style="text-align: center;">  
+</td> 
 <td style="text-align: center;"> 
 **Original** 
 </td> 
@@ -62,6 +66,9 @@ The HOG features for sample `vehicle` and `not-vehicle` images are presented for
 </tr> 
 <tr> 
 <td style="text-align: center;"> 
+Vehicle
+</td> 
+<td style="text-align: center;"> 
 <img src='images/hog_v_orig.jpg' style="width: 300px;"> 
 </td> 
 <td style="text-align: center;"> 
@@ -75,6 +82,9 @@ The HOG features for sample `vehicle` and `not-vehicle` images are presented for
 </td> 
 </tr> 
 <tr> 
+<td style="text-align: center;"> 
+Not-Vehicle
+</td> 
 <td style="text-align: center;"> 
 <img src='images/hog_nv_orig.jpg' style="width: 300px;"> 
 </td> 
@@ -91,11 +101,19 @@ The HOG features for sample `vehicle` and `not-vehicle` images are presented for
 </table> 
 
 ### 2.2 Spatial Features
+The spatial features are obtained using `bin_spatial` function in the `P5_utility_functions`. The `spatial_bins` = (16, 16) is used to obtain feature vector.
+
 
 ### 2.3 Histogram Features
+The histogram features are obtained using `color_hist` function in the `P5_utility_functions`. The `hist_bins` = 16 is used to obtain feature vector.  
 
+==The HOG, spatial and histogram features are appended together before feeding it to the classfier. ==
 
 ## 3. Training a Classifier
+
+### 3.1 Feature Normalization
+The features vector consisting of HOG, spatial and histogram features have different scales in their feature space. In order to 
+
 
 ## 4. Sliding Window Search
 
