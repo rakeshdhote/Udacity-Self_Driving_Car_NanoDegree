@@ -239,9 +239,7 @@ In order to process a video, the image-processing pipeline developed in the earl
 The following video presents the classifier detecting and tracking vehicles. The video contains few false positives and wobbly bounding boxes, but does a good job of detecting and tracking vehicles. 
 Click on the image to run the video.  
  
-
-[![Track-2](images/vehicledetandtrack.png)](https://youtu.be/VWZjQgi9e2M)
-
+[![Track-2](images/vehicledetandtrack.png)](https://youtu.be/k_ecZz_oOrg)
 ## 7. Conclusions 
 
 An image/video processing pipeline is built to detect vehicles and track them using image processing techniques. The pipeline detects the vehicle and tracks them successfully. Although, there are few false positives and wobbly bounding boxes, the pipeline does remarkably well under different test images and video. 
