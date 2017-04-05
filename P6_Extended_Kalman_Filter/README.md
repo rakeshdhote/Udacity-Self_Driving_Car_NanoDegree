@@ -1,7 +1,9 @@
-# Extended Kalman Filter Project Starter Code
+# Extended Kalman Filter Project
 Self-Driving Car Engineer Nanodegree Program
 
 ---
+The objective of perform sensor fusion of laser and radar data for navigation of self-driving car. 
+Extended Kalman filter is implemented for predicting the next state of a car and sensor fusion.  
 
 ## Dependencies
 
@@ -34,7 +36,7 @@ Accuracy - RMSE:
 **Data 2**  
 EKF: 
 Accuracy - RMSE:  
-0.0651294  
- 0.060598  
-  0.53027  
- 0.544317  
+0.185903  
+ 0.19027  
+0.475175  
+0.807872  
