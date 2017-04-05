@@ -2,7 +2,7 @@
 Self-Driving Car Engineer Nanodegree Program
 
 ---
-The objective of perform sensor fusion of laser and radar data for navigation of self-driving car. 
+The objective of this project is to perform sensor fusion of laser and radar data for navigation of a self-driving car. 
 Extended Kalman filter is implemented for predicting the next state of a car and sensor fusion.  
 
 ## Dependencies
