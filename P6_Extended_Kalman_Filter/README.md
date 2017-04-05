@@ -22,3 +22,19 @@ Run a script:
 sh ./run.sh
 
 ## Output  
+ **Data  1**
+EKF: 
+Accuracy - RMSE:
+0.0651294
+ 0.060598
+  0.53027
+ 0.544317
+
+
+**Data 2**
+EKF: 
+Accuracy - RMSE:
+0.0651294
+ 0.060598
+  0.53027
+ 0.544317
