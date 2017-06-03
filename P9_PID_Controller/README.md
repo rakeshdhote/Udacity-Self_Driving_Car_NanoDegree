@@ -6,7 +6,7 @@
 The objective of this project is to control a self-driving car autonomously via proportional-integral-derivative (PID) controller around a simulator lake course. 
 
 ##2. PID Controller 
-A PID controller continuously calculates an error value `e(t)` as the difference between a desired set point and a measured process variable and applies a correction based on proportional, integral, and derivative terms [1]. 
+A PID controller continuously calculates an error value `e(t)` as the difference between a desired set point and a measured process variable and applies a correction based on proportional, integral, and derivative terms [1,2]. 
 
 <td style="text-align: center;"> 
 <img src='images/pid_explained.png' style="width: 300px;"> 
@@ -22,11 +22,12 @@ The hyper parameters are set via manual tuning as follows:
 1. The hyper parameters are initialized as Kp = Ki = Kd = 0. 
 2. The value of Kp is incremented in steps of 0.1. As the car moves relatively straight, the Kp is set to 0.2. 
 3. Keeping Kp constant, the Kd is incremented in steps of 0.1. As the tangent hyperbolic smoothing is used for steering angle, the Kd is set to -1.75. 
-4. Keeping Kp and Kd constant, the Ki is set to a smaller value of 0.001. 
+4. Keeping Kp and Kd constant, the Ki is set to a smaller value of 0.001.   
+
 The final parameters used in the project are: 
 Kp = 0.2, Ki = 0.001, Kd = -1.75. 
 
-[![Simulator Track](images/simulator.png)](https://youtu.be/hp_Q-rgGAPk) 
+[![Simulator Track](images/simulator.png)](https://youtu.be/hp_Q-rgGAPk)   
 Click the above image to start a video. 
 
 ## Basic Build Instructions 

@@ -11,3 +11,11 @@ The repo consists of Udacity's Self Driving Car Nanodegree projects.
 [P4: Advanced Lane Finding](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P4_Advanced_Lane_Finding)
 
 [P5: Vehicle Detection And Tracking](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P5_Vehicle_Detection_And_Tracking)
+
+[P6: Extended Kalman Filter](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P6_Extended_Kalman_Filter)
+
+[P7: Unscented Kalman Filter]()
+
+[P8: Localization - Particle Filter]()
+
+[P9: PID Controller](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P9_PID_Controller)
