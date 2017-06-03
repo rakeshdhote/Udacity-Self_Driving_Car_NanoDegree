@@ -5,7 +5,7 @@
 ## 1. Project Overview   
 The objective of this project is to control a self-driving car autonomously via proportional-integral-derivative (PID) controller around a simulator lake course. 
 
-##2. PID Controller   
+## 2. PID Controller   
 A PID controller continuously calculates an error value `e(t)` as the difference between a desired set point and a measured process variable and applies a correction based on proportional, integral, and derivative terms [1,2].  
 
 <td style="text-align: center;"> 
