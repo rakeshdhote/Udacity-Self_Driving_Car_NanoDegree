@@ -64,19 +64,19 @@ UKF::UKF() {
 
     // Update the process noise
     Q_ = MatrixXd(2, 2);
-    Q_ << std_a_ * std_a_, 0.0d,
-            0.0d, std_yawdd_ * std_yawdd_;
+    Q_ << std_a_ * std_a_, 0.0,
+            0.0, std_yawdd_ * std_yawdd_;
 
     // The Laser measurement noise 
     R_laser_ = MatrixXd(2, 2);
-    R_laser_ << std_laspx_ * std_laspx_, 0.0d,
-            0.0d, std_laspy_ * std_laspx_;
+    R_laser_ << std_laspx_ * std_laspx_, 0.0,
+            0.0, std_laspy_ * std_laspx_;
 
     // The radar measurement noise 
     R_radar_ = MatrixXd(3, 3);
-    R_radar_ << std_radr_ * std_radr_, 0.0d, 0.0d,
-            0.0d, std_radphi_ * std_radphi_, 0.0d,
-            0.0d, 0.0d, std_radrd_ * std_radrd_;
+    R_radar_ << std_radr_ * std_radr_, 0.0, 0.0,
+            0.0, std_radphi_ * std_radphi_, 0.0,
+            0.0, 0.0, std_radrd_ * std_radrd_;
 
     // The state vector X 
     x_ = VectorXd(n_x_);
@@ -180,8 +180,8 @@ void UKF::Prediction(double delta_t) {
     // Create augmented mean state
     VectorXd x_aug = VectorXd(n_aug_);
     x_aug.head(n_x_) = x_;
-    x_aug(n_x_) = 0.0d;
-    x_aug(n_x_ + 1) = 0.0d;
+    x_aug(n_x_) = 0.0;
+    x_aug(n_x_ + 1) = 0.0;
 
     // Create augmented covariance matrix
     MatrixXd P_aug = MatrixXd(n_aug_, n_aug_);
@@ -245,13 +245,13 @@ void UKF::Prediction(double delta_t) {
     }
 
     // Compute the predicted state's mean
-    x_.fill(0.0d);
+    x_.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         x_ = x_ + (weights_(i) * Xsig_pred_.col(i));
     }
 
     // Compute the predicted state's covariance
-    P_.fill(0.0d);
+    P_.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
 
     // find differnce in state
@@ -288,7 +288,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
     // Measurement covariance matrix S 
     MatrixXd S = MatrixXd(2, 2);
-    S.fill(0.0d);
+    S.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         VectorXd residual = Zsig.col(i) - z_pred;
         S = S + (weights_(i) * residual * residual.transpose());
@@ -299,7 +299,7 @@ void UKF::UpdateLidar(MeasurementPackage meas_package) {
 
     // Create matrix for cross correlation Tc 
     MatrixXd Tc = MatrixXd(n_x_, 2);
-    Tc.fill(0.0d);
+    Tc.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         VectorXd tx = Xsig_pred_.col(i) - x_;
         VectorXd tz = Zsig.col(i) - z_pred;
@@ -331,7 +331,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
     position. Modify the state vector, x_, and covariance, P_.
     */
     MatrixXd Zsig = MatrixXd(3, n_sigma_);
-    Zsig.fill(0.0d);
+    Zsig.fill(0.0);
 
     // transform sigma points into measurement space 
     for (int i = 0; i < n_sigma_; i++) {
@@ -353,14 +353,14 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
     // mean predicted measurement
     VectorXd z_pred = VectorXd(3);
-    z_pred.fill(0.0d);
+    z_pred.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         z_pred = z_pred + (weights_(i) * Zsig.col(i));
     }
 
     // Measurement covariance matrix S
     MatrixXd S = MatrixXd(3, 3);
-    S.fill(0.0d);
+    S.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         // Residual 
         VectorXd z_diff = Zsig.col(i) - z_pred;
@@ -377,7 +377,7 @@ void UKF::UpdateRadar(MeasurementPackage meas_package) {
 
     // Create & calculate matrix for cross correlation Tc
     MatrixXd Tc = MatrixXd(n_x_, 3);
-    Tc.fill(0.0d);
+    Tc.fill(0.0);
     for (int i = 0; i < n_sigma_; i++) {
         // Residual */
         VectorXd z_diff = Zsig.col(i) - z_pred;
