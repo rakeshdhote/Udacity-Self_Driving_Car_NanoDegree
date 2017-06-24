@@ -257,3 +257,7 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
 
 };
 
+void MPC::clear_prediction() {
+    x_pred.clear();
+    y_pred.clear();
+}
