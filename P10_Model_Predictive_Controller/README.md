@@ -28,21 +28,43 @@ y[t+1] = y[t] + v[t] * sin(psi[t]) * dt
 psi[t+1] = psi[t] + v[t] / Lf * delta[t] * dt
 v[t+1] = v[t] + a[t] * dt
 
-Lf = distance between the center of mass of the vehicle and the front wheels.  
+Lf = 2.67 m (given) = distance between the center of mass of the vehicle and the front wheels.  
 ```
 
-The state is also augmented with cross track error (`cte`) and heading angle error (`epsi`). The `cte` defines offset from the centre of the road, while `epsi` defines difference in the ideal and acutal heading directions.  
+The state is also augmented with cross track error (`cte`) and heading angle error (`epsi`). The `cte` defines offset from the centre of the road, while the `epsi` defines difference in the ideal and acutal heading directions.  
 
-## 2. Timestep Length and Elapsed Duration (N & dt)   
+## 2. Hyperparameter Setting   
 
+Student discusses the reasoning behind the chosen N (timestep length) and dt (elapsed duration between timesteps) values. Additionally the student details the previous values tried.
+
+In order for the MPC to follow along the wayline, the cost function is defined as sum of weighted errors of cte, epsi, velocity, steering angle, accleration, change in steering angle, and change in throttle. The weights for the cost function components are defined as follows:  
+
+```
+const double coeff_cte = 3.0; 		// cte
+const double coeff_epsi = 3.0;		// epsi
+const double coeff_v = 0.1;			// velocity
+const double coeff_delta = 160;		// steering angle
+const double coeff_a = 0.2;			// accleration
+const double coeff_ddelta = 25.0;	// change in steering angle
+const double coeff_da = 50.0;		// change in accleration/throttle
+```
+
+
+```
+const size_t N = 9; 
+const double dt = 0.1;
+```
 
 
 
 
 ## 3. Polynomial Fitting and MPC Preprocessing   
 
+A polynomial is fitted to waypoints.
+If the student preprocesses waypoints, the vehicle state, and/or actuators prior to the MPC procedure it is described.
 
 ## 4. Model Predictive Control with Latency  
+The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.  
 
 
 ## Basic Build Instructions 
