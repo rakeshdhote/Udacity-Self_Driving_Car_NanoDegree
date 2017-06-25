@@ -56,9 +56,6 @@ const double dt = 0.1;
 
 ## 3. Polynomial Fitting and MPC Preprocessing   
 
-A polynomial is fitted to waypoints.
-If the student preprocesses waypoints, the vehicle state, and/or actuators prior to the MPC procedure it is described.
-
 The waypoints for the simulator lake course are first transformed to vehicle coordinate system via transformation and rotation as  
 
 ```c++
@@ -69,9 +66,12 @@ waypoints_xs[i] = dx * cos(delayedPsi) + dy * sin(delayedPsi);
 waypoints_ys[i] = dy * cos(delayedPsi) - dx * sin(delayedPsi);
 ```
 
-## 4. Model Predictive Control with Latency  
-The student implements Model Predictive Control that handles a 100 millisecond latency. Student provides details on how they deal with latency.  
+As discussed in the lecture notes, a third degree polynomial can express the real world road scenario, hence it is used to fit the waypoints. Using the third degree polynomial coefficints and state, the next state of the car can be predicted via optimization problem.  
 
+
+## 4. Model Predictive Control with Latency  
+
+A kinematic model is used to deal with 100 ms latency. The latency is converted into the `dt` to calculate the delayed state. This state is used as base starting state for the subsequent calculations.
 
 ## Basic Build Instructions 
 1. Clone this repo. 
