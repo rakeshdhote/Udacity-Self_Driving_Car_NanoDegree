@@ -19,3 +19,5 @@ The repo consists of Udacity's Self Driving Car Nanodegree projects.
 [P8: Localization - Particle Filter]()
 
 [P9: PID Controller](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P9_PID_Controller)
+
+[P10: Model Predictive Controller](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P10_Model_Predictive_Controller)
