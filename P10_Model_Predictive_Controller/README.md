@@ -62,7 +62,7 @@ waypoints_ys[i] = dy * cos(delayedPsi) - dx * sin(delayedPsi);
 As discussed in the lecture notes, a third degree polynomial can express the real-world road scenario, hence it is used to fit the way points. Using the third-degree polynomial coefficients and state, the next state of the car can be predicted via optimization problem. 
  
 ## 4. Model Predictive Control with Latency 
-A kinematic model is used to deal with 100 ms latency. The latency is converted into `dt` to calculate the delayed state. This state is used as base starting state for the subsequent calculations. 
+A kinematic model is used to deal with 100 ms latency. The latency is converted into `dt` to calculate the delayed state. This delayed state is used as base starting state for the subsequent calculations. 
 
 ## Basic Build Instructions 
 1. Clone this repo. 
