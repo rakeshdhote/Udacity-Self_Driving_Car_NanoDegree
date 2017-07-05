@@ -16,7 +16,11 @@ The repo consists of Udacity's Self Driving Car Nanodegree projects.
 
 [P7: Unscented Kalman Filter](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P7_Unscented_Kalman_Filter)
 
+<<<<<<< HEAD
 [P8: Localization - Particle Filter](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P6_Particle_Filter)
+=======
+[P8: Localization - Particle Filter](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P8_Particle_Filter)
+>>>>>>> 5bdd31ed38c8910bfe381a7570ab9168084c1ef1
 
 [P9: PID Controller](https://github.com/rakeshdhote/Udacity-Self_Driving_Car_NanoDegree/tree/master/P9_PID_Controller)
 
